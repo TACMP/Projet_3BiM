@@ -91,30 +91,33 @@ class Woman :
 	def simul_RK (self) :
 
 		simul_time = 0
+		while (self.I.see==True):
+			if (self.alive == True) and (simul_time < simul_length):					# simulation (currently) ends after a long time, or once the woman has died
 
-		while (self.alive == True) and (simul_time < simul_length) :					# simulation (currently) ends after a long time, or once the woman has died
+				
+				self.generate_metastasis(simul_time)
+				for org in (self.body).values() :
+					if org.status['T'] != 0:
+						if org.status['H']<0.6 or org.status['I']<0.1:											# if there's too many tumor cells, we consider that the woman just died, thus the simulation ends
+							self.alive = False
+							if org.status['H']<0.6:
+								s = "".join(["La patiente est morte au bout de ",str(simul_time/10)," jours\n d'un cancer généralisé."])
+							elif org.status['I'] < 0.1:
+								s = "".join(["La patiente est morte au bout de ",str(simul_time/10)," jours\n d'une maladie opportuniste\n (Système immunitaire trop faible)."])
+							self.I.death_message(s)
+							print s
+							print org.status
+						else :																# else we update her status, according to the model (one iteration)
+							org.rK4(org.status['H'], org.status['T'], org.status['I'], org.status['U'], org.fh, org.ft, org.fi, org.fu, simul_step)
 
-			self.generate_metastasis(simul_time)										# try and generate a metastasis (probabilities in mts_appear_probs)
+						org.update_layout(simul_time)												# we then update the layout (the grid drawn in the window) according to the values predicted by the equations
+						self.I.draw_organ(org.name,org.cells)
+						org.parameters['v'] = self.I.update_treatment()
 
-			for org in (self.body).values() :									# for each organ :
-
-				if org.status['T'] != 0 :
-
-					if org.status['H'] < 0.6 :											# if there's too many tumor cells, we consider that the woman just died, thus the simulation ends
-						self.alive = False
-						print "".join(["Woman died on day ",str(simul_time/10),"."])
-						print org.status
-					else :																# else we update her status, according to the model (one iteration)
-						org.rK4(org.status['H'], org.status['T'], org.status['I'], org.status['U'], org.fh, org.ft, org.fi, org.fu, simul_step)
-
-					org.update_layout(simul_time)												# we then update the layout (the grid drawn in the window) according to the values predicted by the equations
-					self.I.draw_organ(org.name,org.cells)
-					org.parameters['v'] = self.I.update_treatment()
-
-			simul_time += 1
-			if simul_time%50==0 :
-				print simul_time, self.body['Breast'].parameters['v']
-			#time.sleep(0.5)
+				simul_time += 1
+				if simul_time%50==0 :
+					print simul_time, self.body['Breast'].parameters['v']
+				#time.sleep(0.5)
 
 	# -__-__-__-__-__-__-__-__-__-__-__-__-__-__-__-__-__-__-__-__-__-__-__-__-__-__-__-__-__-__-__-__-__-__-__-__-__-__-__-__-__-__-__-__-__-__- #
 	#																																		  	  #
@@ -171,7 +174,7 @@ class Organ :
 		#for j in xrange(0,self.size,1) :
 			#(self.cells).append(['H' for k in xrange (0,self.size,1)])     # at first, all cells are healthy
 
-		self.status = {'H' : 1, 'T' : 0, 'Q' : 0, 'I' : 0.1, 'U' : 0}       # status of the organ at any given simul_time (with proportion (0<p<1) of each type of cell)
+		self.status = {'H' : 1, 'T' : 0, 'Q' : 0, 'I' : 0.1	, 'U' : 0}       # status of the organ at any given simul_time (with proportion (0<p<1) of each type of cell)
 
 		# parameters of the model, specific to each organ
 		self.parameters = x_parameters
