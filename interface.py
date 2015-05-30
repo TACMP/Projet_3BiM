@@ -4,7 +4,8 @@ from Tkinter import*
 import math
 import time
 import intTest
-import pylab                 
+import pylab      
+import random           
 #from Numeric import *  
     
 
@@ -35,7 +36,7 @@ class frame:
 		self.champ_label.pack()
 		
 		
-
+		#Pour que la fenetre reste ouverte a la fin:
 		self.see=True
 		
 		
@@ -134,6 +135,11 @@ class frame:
 		
 
 		pBas1.add(bouton1)
+		
+		#Bouton pour intervention chirurgicale
+		self.buttonSurgery=False
+		bSurgery=Button(pHaut1,text="Intervention chirurgicale",command=self.setSurgery)
+		pHaut1.add(bSurgery)
 
 		"""
 		######################################################################################
@@ -163,10 +169,10 @@ class frame:
 		valeurs.append(fonction)
 
 		
-		self.b.plot(temps,valeurs)
-		pylab.axis([min(temps)-0.1,max(temps)+0.1,min(valeurs)-0.1,max(valeurs)+0.1])
+		#self.b.plot(temps,valeurs)
+		#pylab.axis([min(temps)-0.1,max(temps)+0.1,min(valeurs)-0.1,max(valeurs)+0.1])
 
-		self.canvas.draw()
+		#self.canvas.draw()
 
 	def fonction(self):
 		f= intTest.fenetre2()
@@ -237,4 +243,14 @@ class frame:
 		death.pack()
 		self.fenetre.update_idletasks()
 		self.fenetre.update()
+		
+	def setSurgery(self):
+		self.buttonSurgery=True
+		
+	def surgery(self,org): # Idee : mettre un nombre max et un temps entre les interventions? Sinon il suffit de faire plein d'interventions pour guerir la patiente
+		p=0.90+random.random()*0.05 #calcul le pourcentage de tumeur qui sera enleve
+		remove=p*org.status['T']
+		org.status['T']-=remove
+		org.status['H']+=remove
+		self.buttonSurgery=False
 		
