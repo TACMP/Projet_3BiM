@@ -5,7 +5,8 @@ import math
 import time
 import intTest
 import pylab      
-import random           
+import random        
+
 #from Numeric import *  
     
 
@@ -48,7 +49,7 @@ class frame:
 		panneau1 = PanedWindow(self.fenetre,orient=HORIZONTAL,height=710,width=1400)
 		
 		pHaut = PanedWindow(self.fenetre,orient=HORIZONTAL,height=710,width=800)
-		pDroite = PanedWindow(self.fenetre,height=710,width=400)
+		pDroite = PanedWindow(self.fenetre,orient=VERTICAL,height=710,width=400)
 
 		pHaut1 = PanedWindow(pHaut, orient=VERTICAL)
 		pHaut2 = PanedWindow(pHaut, orient=VERTICAL)
@@ -74,17 +75,18 @@ class frame:
 		
 		################################"""
 		#self.CanvasCourbes = Canvas(self.fenetre, width=600, height=300,bg='white')
-		fig = pylab.figure()
-		self.b = fig.add_subplot(111)
-		self.canvas = FigureCanvasTkAgg(fig, master=pDroite)
+		self.fig = pylab.figure()
+		self.b = self.fig.add_subplot(111)
+		self.canvas = FigureCanvasTkAgg(self.fig, master=pDroite)
 		self.canvas.show()
 		self.canvas.get_tk_widget().pack(side=TOP, fill=BOTH, expand=1)
 		toolbar = NavigationToolbar2TkAgg(self.canvas, self.fenetre)
 		toolbar.update()
 		self.canvas._tkcanvas.pack()
+		
+		
+		"""
 		global t,dt,temps,valeurs,courbe
-
-
 		t=0
 		dt = 0.1
 		interval_temps =100
@@ -96,6 +98,23 @@ class frame:
 		valeurs.append(fonction)
 
 		self.b.plot(temps,valeurs)
+
+		self.canvas.show()
+		"""
+		global t,dt,nbT,nbH,temps,valT,valH
+		t=0
+		dt = 0.1
+		temps=[]
+		valT=[]
+		valH=[]
+		temps.append(t)
+		nbT=0
+		nbH=0
+		valT.append(nbT)
+		valH.append(nbH)
+		print len(temps), len(valT)
+		self.b.plot(temps,valT,'r-')
+		self.b.plot(temps,valH,'b-')
 
 		self.canvas.show()
 		
@@ -138,8 +157,9 @@ class frame:
 		
 		#Bouton pour intervention chirurgicale
 		self.buttonSurgery=False
-		bSurgery=Button(pHaut1,text="Intervention chirurgicale",command=self.setSurgery)
-		pHaut1.add(bSurgery)
+		bSurgery=Button(self.fenetre,text="Intervention chirurgicale",command=self.setSurgery, height=3, width=3)
+		bSurgery.pack()
+		pBas1.add(bSurgery)
 
 		"""
 		######################################################################################
@@ -156,10 +176,7 @@ class frame:
 
 		pBas2.add(case1)
 		pBas2.add(case2)
-		"""
 		
-		pBas.pack()
-
 	def run(self):
 		global t,dt,temps,valeurs,courbe
 		t=t+dt
@@ -173,15 +190,49 @@ class frame:
 		#pylab.axis([min(temps)-0.1,max(temps)+0.1,min(valeurs)-0.1,max(valeurs)+0.1])
 
 		#self.canvas.draw()
+		"""
+		
+		pBas.pack()
+
+	def run2(self,org):
+		global  t,dt,nbT,nbH,temps,valT,valH
+		#if t==0
+		t=t+dt
+		temps.append(t)
+		
+		nbT = org.status['T']
+		nbH = org.status['H']
+		valT.append(nbT)
+		valH.append(nbH)
+		"""
+		self.b.plot(temps,valT,'r-')
+		self.b.plot(temps,valH,'b-')
+		
+		self.b.plot(t,nbT,'r-')
+		self.b.plot(t,nbH,'b-')
+		
+		self.canvas._tkcanvas.create_oval(t, nbT,t+0.1,nbT+0.1, 'r-')
+		self.canvas._tkcanvas.create_oval(t, nbH,t+0.1,nbH +0.1, 'b-')
+		"""
+		self.b.plot(temps,valT,'r-')
+		self.b.plot(temps,valH,'b-')
+		"""
+		if len(temps)>=100:
+			pylab.axis([max(temps)-5,max(temps)+0.1,min(min(valT),min(valH))-0.1,max(max(valT),max(valH))+0.1])
+		else:
+			pylab.axis([min(temps)-0.1,max(temps)+0.1,min(min(valT),min(valH))-0.1,max(max(valT),max(valH))+0.1])
+		"""
+		self.canvas.draw()
 
 	def fonction(self):
 		f= intTest.fenetre2()
 		print "coucou"
 			
-	def draw_organ(self,name,org):
+	def draw_organ(self,name,org,orgEntier):
 		
 		cs = 5
 		if name=='Lung':
+			
 			for i in xrange(len(org)):
 				x=i%int(math.sqrt(len(org)))
 				y=i/int(math.sqrt(len(org)))
@@ -200,10 +251,11 @@ class frame:
 					if org[i]=='H':
 						self.Canvas2.create_oval(cs*x+10,cs*y+10,cs*x+11,cs*y+11,outline='green')
 					elif org[i]=='T':
-						self.Canvas2.create_oval(cs*x+10,cs*y+10,cs*x+11,cs*y+11,outline='red')
+						self.Canvas2.create_oval(cs*x+10,cs*y+10,cs*x+11,cs*y+11,outline='red')			
 			self.cells_memorize[1] = list(org)
 
 		elif name=='Breast':
+			
 			for i in xrange(len(org)):
 				x=i%int(math.sqrt(len(org)))
 				y=i/int(math.sqrt(len(org)))
@@ -212,7 +264,6 @@ class frame:
 						self.Canvas3.create_oval(cs*x+10,cs*y+10,cs*x+11,cs*y+11,outline='green')
 					elif org[i]=='T':
 						self.Canvas3.create_oval(cs*x+10,cs*y+10,cs*x+11,cs*y+11,outline='red')
-						self.run()
 			self.cells_memorize[2] = list(org)
 
 		elif name=='Skin':
@@ -224,7 +275,6 @@ class frame:
 						self.Canvas4.create_oval(cs*x+10,cs*y+10,cs*x+11,cs*y+11,outline='green')
 					elif org[i]=='T':
 						self.Canvas4.create_oval(cs*x+10,cs*y+10,cs*x+11,cs*y+11,outline='red')
-						
 			self.cells_memorize[3] = list(org)
 
 		# prise en compte actions utilisateur
@@ -241,8 +291,8 @@ class frame:
 		s.set(message)
 		death=Label(t, textvariable=s)
 		death.pack()
-		self.fenetre.update_idletasks()
-		self.fenetre.update()
+		self.fenetre.mainloop()
+		#a faire : un reset quand on ferme la fenetre message
 		
 	def setSurgery(self):
 		self.buttonSurgery=True

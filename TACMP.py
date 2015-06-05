@@ -7,7 +7,7 @@ import random
 import time
 import interface
 
-random.seed(255)
+#random.seed(255)
 
 # -__-__-__-__-__-__-__-  Glossary  -__-__-__-__-__-__-__- #
 
@@ -51,7 +51,7 @@ class Woman :
 		self.I = interface.frame()
 
 		for org in (self.body).values() :
-			self.I.draw_organ(org.name,org.cells)
+			self.I.draw_organ(org.name,org.cells,org)
 
 
 
@@ -126,8 +126,10 @@ class Woman :
 							print org.status
 						else :																# else we update her status, according to the model (one iteration)
 							org.rK4(org.status['H'], org.status['T'], org.status['I'], org.status['U'], org.fh, org.ft, org.fi, org.fu, simul_step)
-						org.update_layout(simul_time)												# we then update the layout (the grid drawn in the window) according to the values predicted by the equations
-						self.I.draw_organ(org.name,org.cells)
+						org.update_layout(simul_time)	
+						if org.name=='Lung':
+							self.I.run2(org)											# we then update the layout (the grid drawn in the window) according to the values predicted by the equations
+						self.I.draw_organ(org.name,org.cells,org)
 						org.parameters['v'] = self.I.update_treatment()
 
 				simul_time += 1
