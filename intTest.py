@@ -5,17 +5,13 @@ from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg, NavigationToolb
 from matplotlib.figure import Figure
 import matplotlib
 matplotlib.use('TkAgg')
-
 from numpy import *
-
 import pylab as p
 from scipy import integrate
-
 from numpy import arange, sin, pi,array
 
-
 class fenetre2:
-    def __init__(self):
+	def __init__(self,pn,pt,pi):
 		print "je fais la deuxieme fenetre"
 		self.fen=Tk()
 		self.fen.geometry("600x600")
@@ -25,10 +21,12 @@ class fenetre2:
 		v=e.get()
 		label =Label(self.fen,text="Value")
 		label.pack()
+		
 		def sel():
 			print (v)
-			s  = "Val "+ v
-			label.config(text =s)        
+			s = "Val "+ v
+			label.config(text =s)
+			
 		fig = Figure(figsize=(5,4), dpi=100)
 		c = FigureCanvasTkAgg(fig, master=self.fen)
 		a = fig.add_subplot(111)
@@ -65,11 +63,12 @@ class fenetre2:
 			a1=0.3
 			a2=0.35
 			a3=0.1
-			pn=0.8
-			pt=0.2
-			cell=[0]*int(nbcell*pt)+[1]*int(nbcell*pn)            
+			Valpn=pn
+			Valpt=pt
+			Valpi=pi
+			cell=[0]*int(nbcell*pt)+[1]*int(nbcell*pn)
 			t=linspace(0,400,4000)
-			X0=array([pn,pt,0.15,0.0])
+			X0=array([pn,pt,pi,0.0])
 			fin=20
 			pas=100
 			ttf=1
@@ -82,12 +81,11 @@ class fenetre2:
 			a.legend(('cellules saines', 'cellules tumorales','cellules immunitaires'),'best')
 			c.show()
 			
-
 		createCanvas()
 		
 		def clear():
 			a.clear()
-
+			
 		def f():
 			clear()
 			a = fig.add_subplot(111)
@@ -95,14 +93,4 @@ class fenetre2:
 			
 		button = Button(self.fen, text="Get Scale Value", command=f)
 		button.pack()
-		
 		#self.fen.mainloop()
-
-
-
-        
-
-        
-        
-
-        

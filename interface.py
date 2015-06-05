@@ -5,7 +5,9 @@ import math
 import time
 import intTest
 import pylab      
-import random        
+import random       
+
+
 
 #from Numeric import *  
     
@@ -20,6 +22,13 @@ class frame:
 	def __init__(self):
 		self.fenetre = Tk()
 		self.fenetre.geometry("1400x1400")
+		
+		"""
+		self.sickWoman = TACMP.Woman()
+		print Poor_girl
+		self.sickWoman.simul_RK()
+		print Poor_girl
+		"""
 
 		self.cells_memorize = []
 		for i in xrange(4) :
@@ -83,24 +92,7 @@ class frame:
 		toolbar = NavigationToolbar2TkAgg(self.canvas, self.fenetre)
 		toolbar.update()
 		self.canvas._tkcanvas.pack()
-		
-		
-		"""
-		global t,dt,temps,valeurs,courbe
-		t=0
-		dt = 0.1
-		interval_temps =100
-		fonction =math.sin(t)
-		temps=[]
-		valeurs=[]
-		#tableaux pour srocker valeurs
-		temps.append(t)
-		valeurs.append(fonction)
-
-		self.b.plot(temps,valeurs)
-
-		self.canvas.show()
-		"""
+	
 		global t,dt,nbT,nbH,temps,valT,valH
 		t=0
 		dt = 0.1
@@ -177,25 +169,15 @@ class frame:
 		pBas2.add(case1)
 		pBas2.add(case2)
 		
-	def run(self):
-		global t,dt,temps,valeurs,courbe
-		t=t+dt
-		fonction=math.sin(t)
-		#ajout
-		temps.append(t)
-		valeurs.append(fonction)
-
+"""
 		
-		#self.b.plot(temps,valeurs)
-		#pylab.axis([min(temps)-0.1,max(temps)+0.1,min(valeurs)-0.1,max(valeurs)+0.1])
-
-		#self.canvas.draw()
-		"""
 		
 		pBas.pack()
 
 	def run2(self,org):
 		global  t,dt,nbT,nbH,temps,valT,valH
+		
+		self.b.clear()
 		#if t==0
 		t=t+dt
 		temps.append(t)
@@ -216,6 +198,7 @@ class frame:
 		"""
 		self.b.plot(temps,valT,'r-')
 		self.b.plot(temps,valH,'b-')
+
 		"""
 		if len(temps)>=100:
 			pylab.axis([max(temps)-5,max(temps)+0.1,min(min(valT),min(valH))-0.1,max(max(valT),max(valH))+0.1])
@@ -225,7 +208,8 @@ class frame:
 		self.canvas.draw()
 
 	def fonction(self):
-		f= intTest.fenetre2()
+		f= intTest.fenetre2(0.8,0.2,0.15)
+		TACMP.test()
 		print "coucou"
 			
 	def draw_organ(self,name,org,orgEntier):
