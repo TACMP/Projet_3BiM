@@ -55,10 +55,10 @@ class frame:
 		######################################################################################
 		#                             Separation de la fenetre                               #
 		######################################################################################
-		panneau1 = PanedWindow(self.fenetre,orient=HORIZONTAL,height=710,width=1400)
+		panneau1 = PanedWindow(self.fenetre,orient=HORIZONTAL,height=750,width=1400)
 		
-		pHaut = PanedWindow(self.fenetre,orient=HORIZONTAL,height=710,width=800)
-		pDroite = PanedWindow(self.fenetre,orient=VERTICAL,height=710,width=400)
+		pHaut = PanedWindow(self.fenetre,orient=HORIZONTAL,height=750,width=800)
+		pDroite = PanedWindow(self.fenetre,orient=VERTICAL,height=750,width=400)
 
 		pHaut1 = PanedWindow(pHaut, orient=VERTICAL)
 		pHaut2 = PanedWindow(pHaut, orient=VERTICAL)
@@ -73,11 +73,37 @@ class frame:
 		self.Canvas4= Canvas(self.fenetre, width=350, height=350,bg='white') 
 		self.Canvas4.create_rectangle(1,1,349,349) 
 		
-		pHaut1.add(self.Canvas1)
-		pHaut1.add(self.Canvas2)
-		pHaut2.add(self.Canvas3)
-		pHaut2.add(self.Canvas4)
+		txt=StringVar()
+		txt.set("Poumon")
+		self.Poumon = Label(self.fenetre, textvariable=txt)
+		
+		txt2=StringVar()
+		txt2.set("Sein")
+		self.Sein = Label(self.fenetre, textvariable=txt2)
+		
+		txt3=StringVar()
+		txt3.set("Foie")
+		self.Foie = Label(self.fenetre, textvariable=txt3)
+		
+		txt4=StringVar()
+		txt4.set("Peau")
+		self.Peau = Label(self.fenetre, textvariable=txt4)
+		
+		pHaut1.add(self.Poumon)
 
+		pHaut1.add(self.Canvas1)
+		
+		pHaut1.add(self.Foie)
+		
+		pHaut1.add(self.Canvas2)
+		
+		pHaut2.add(self.Sein)
+		pHaut2.add(self.Canvas3)
+		
+		pHaut2.add(self.Peau)
+		pHaut2.add(self.Canvas4)
+		
+		
 		pHaut.add(pHaut1)
 		pHaut.add(pHaut2)
 		
@@ -127,8 +153,8 @@ class frame:
 
 		pBas = PanedWindow(self.fenetre, orient=HORIZONTAL)
 		pBas.pack(side=TOP)
-		pBas1 = PanedWindow(pBas, orient=VERTICAL,height=200,width=300)
-		pBas2 = PanedWindow(pBas, orient=VERTICAL,height=200,width=300)
+		pBas1 = PanedWindow(pBas, orient=VERTICAL,height=150,width=300)
+		pBas2 = PanedWindow(pBas, orient=VERTICAL,height=150,width=300)
 
 		pBas.add(pBas1)
 		pBas.add(pBas2)
