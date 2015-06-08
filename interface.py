@@ -49,6 +49,11 @@ class frame:
 		#Pour que la fenetre reste ouverte a la fin:
 		self.see=True
 		
+		self.TraceCourbeLung =False
+		self.TraceCourbeBreast =False
+		self.TraceCourbeSkin =False
+		self.TraceCourbeLiver =False
+		
 		
 		
 
@@ -125,13 +130,13 @@ class frame:
 		
 		
 
-		pBas = PanedWindow(self.fenetre, orient=HORIZONTAL)
-		pBas.pack(side=TOP)
-		pBas1 = PanedWindow(pBas, orient=VERTICAL,height=200,width=300)
-		pBas2 = PanedWindow(pBas, orient=VERTICAL,height=200,width=300)
+		self.pBas = PanedWindow(self.fenetre, orient=HORIZONTAL)
+		self.pBas.pack(side=TOP)
+		pBas1 = PanedWindow(self.pBas, orient=VERTICAL,height=200,width=300)
+		pBas2 = PanedWindow(self.pBas, orient=VERTICAL,height=200,width=300)
 
-		pBas.add(pBas1)
-		pBas.add(pBas2)
+		self.pBas.add(pBas1)
+		self.pBas.add(pBas2)
 
 		
 
@@ -141,11 +146,22 @@ class frame:
 
 		
 
-		bouton1= Button(self.fenetre, text="Tracer courbes", command=self.fonction, height=3, width=3)
-		bouton1.pack()
+		boutonLung= Button(self.fenetre, text="Tracer courbes Poumon", command=self.TracerCourbeLung, height=3, width=3)
+		boutonLung.pack()
 		
+		boutonBreast= Button(self.fenetre, text="Tracer courbes Sein", command=self.TracerCourbeBreast, height=3, width=3)
+		boutonBreast.pack()
+		
+		boutonLiver= Button(self.fenetre, text="Tracer courbes Foie", command=self.TracerCourbeLiver, height=3, width=3)
+		boutonLiver.pack()
+		
+		boutonSkin= Button(self.fenetre, text="Tracer courbes Peau", command=self.TracerCourbeSkin, height=3, width=3)
+		boutonSkin.pack()
 
-		pBas1.add(bouton1)
+		pBas1.add(boutonBreast)
+		pBas1.add(boutonLiver)
+		pBas1.add(boutonLung)
+		pBas1.add(boutonSkin)
 		
 		#Bouton pour intervention chirurgicale
 		self.buttonSurgery=False
@@ -172,7 +188,7 @@ class frame:
 """
 		
 		
-		pBas.pack()
+		self.pBas.pack()
 
 	def run2(self,org):
 		global  t,dt,nbT,nbH,temps,valT,valH
@@ -206,10 +222,25 @@ class frame:
 			pylab.axis([min(temps)-0.1,max(temps)+0.1,min(min(valT),min(valH))-0.1,max(max(valT),max(valH))+0.1])
 		"""
 		self.canvas.draw()
+		
+	def TracerCourbeLung(self):
+		self.TraceCourbeLung = True
+		
+	def TracerCourbeBreast(self):
+		self.TraceCourbeBreast = True
+		
+	def TracerCourbeLiver(self):
+		self.TraceCourbeLiver = True
+		
+	def TracerCourbeSkin(self):
+		self.TraceCourbeSkin = True
 
-	def fonction(self):
-		f= intTest.fenetre2(0.8,0.2,0.15)
-		TACMP.test()
+	def fonction(self,pn,pt,pi):
+		f= intTest.fenetre2(pn,pt,pi)
+		self.TraceCourbeLung =False
+		self.TraceCourbeBreast =False
+		self.TraceCourbeSkin =False
+		self.TraceCourbeLiver =False
 		print "coucou"
 			
 	def draw_organ(self,name,org,orgEntier):

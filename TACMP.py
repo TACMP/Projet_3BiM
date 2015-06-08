@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*
 
+
 import Tkinter
 import profile
 import math
@@ -49,11 +50,11 @@ class Woman :
 		self.initiate_tumor()						# creating primary tumor
 
 		self.I = interface.frame()
+	
 
 		for org in (self.body).values() :
 			self.I.draw_organ(org.name,org.cells,org)
-
-
+			
 
 	# -__-__-__-__-   Only called by __init__, this method chooses the first affected organ, and then calls a method to effectively create the initial tumor   -__-__-__-__- #
 	def initiate_tumor (self) :
@@ -130,6 +131,7 @@ class Woman :
 						if org.name=='Lung':
 							self.I.run2(org)											# we then update the layout (the grid drawn in the window) according to the values predicted by the equations
 						self.I.draw_organ(org.name,org.cells,org)
+						
 						org.parameters['v'] = self.I.update_treatment()
 
 				simul_time += 1
@@ -142,6 +144,18 @@ class Woman :
 				if simul_time%50==0 :
 					print simul_time
 				#time.sleep(0.5)
+				
+				if self.I.TraceCourbeLung == True :
+					self.I.fonction(self.body['Lung'].status['H'],self.body['Lung'].status['T'],self.body['Lung'].status['I'])
+					
+				if self.I.TraceCourbeBreast == True :
+					self.I.fonction(self.body['Breast'].status['H'],self.body['Breast'].status['T'],self.body['Breast'].status['I'])
+					
+				if self.I.TraceCourbeSkin == True :
+					self.I.fonction(self.body['Skin'].status['H'],self.body['Skin'].status['T'],self.body['Skin'].status['I'])
+				
+				if self.I.TraceCourbeLiver == True :
+					self.I.fonction(self.body['Liver'].status['H'],self.body['Liver'].status['T'],self.body['Liver'].status['I'])
 
 	# -__-__-__-__-__-__-__-__-__-__-__-__-__-__-__-__-__-__-__-__-__-__-__-__-__-__-__-__-__-__-__-__-__-__-__-__-__-__-__-__-__-__-__-__-__-__- #
 	#																																		  	  #

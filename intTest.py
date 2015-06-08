@@ -22,6 +22,7 @@ class fenetre2:
 		label =Label(self.fen,text="Value")
 		label.pack()
 		
+		
 		def sel():
 			print (v)
 			s = "Val "+ v
@@ -46,6 +47,7 @@ class fenetre2:
 			v-d2*X[3]])
 			
 		def createCanvas():
+			
 			nbcell=100
 			r2=1
 			b2=1
@@ -66,9 +68,9 @@ class fenetre2:
 			Valpn=pn
 			Valpt=pt
 			Valpi=pi
-			cell=[0]*int(nbcell*pt)+[1]*int(nbcell*pn)
+			cell=[0]*int(nbcell*Valpt)+[1]*int(nbcell*Valpn)
 			t=linspace(0,400,4000)
-			X0=array([pn,pt,pi,0.0])
+			X0=array([Valpn,Valpt,Valpi,0.0])
 			fin=20
 			pas=100
 			ttf=1
@@ -80,7 +82,8 @@ class fenetre2:
 			#a.plot(t,u,'y-',label='U')
 			a.legend(('cellules saines', 'cellules tumorales','cellules immunitaires'),'best')
 			c.show()
-			
+		
+		
 		createCanvas()
 		
 		def clear():
