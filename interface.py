@@ -60,10 +60,10 @@ class frame:
 		######################################################################################
 		#                             Separation de la fenetre                               #
 		######################################################################################
-		panneau1 = PanedWindow(self.fenetre,orient=HORIZONTAL,height=710,width=1400)
+		panneau1 = PanedWindow(self.fenetre,orient=HORIZONTAL,height=750,width=1400)
 		
-		pHaut = PanedWindow(self.fenetre,orient=HORIZONTAL,height=710,width=800)
-		pDroite = PanedWindow(self.fenetre,orient=VERTICAL,height=710,width=400)
+		pHaut = PanedWindow(self.fenetre,orient=HORIZONTAL,height=750,width=800)
+		pDroite = PanedWindow(self.fenetre,orient=VERTICAL,height=750,width=400)
 
 		pHaut1 = PanedWindow(pHaut, orient=VERTICAL)
 		pHaut2 = PanedWindow(pHaut, orient=VERTICAL)
@@ -78,11 +78,37 @@ class frame:
 		self.Canvas4= Canvas(self.fenetre, width=350, height=350,bg='white') 
 		self.Canvas4.create_rectangle(1,1,349,349) 
 		
-		pHaut1.add(self.Canvas1)
-		pHaut1.add(self.Canvas2)
-		pHaut2.add(self.Canvas3)
-		pHaut2.add(self.Canvas4)
+		txt=StringVar()
+		txt.set("Poumon")
+		self.Poumon = Label(self.fenetre, textvariable=txt)
+		
+		txt2=StringVar()
+		txt2.set("Sein")
+		self.Sein = Label(self.fenetre, textvariable=txt2)
+		
+		txt3=StringVar()
+		txt3.set("Foie")
+		self.Foie = Label(self.fenetre, textvariable=txt3)
+		
+		txt4=StringVar()
+		txt4.set("Peau")
+		self.Peau = Label(self.fenetre, textvariable=txt4)
+		
+		pHaut1.add(self.Poumon)
 
+		pHaut1.add(self.Canvas1)
+		
+		pHaut1.add(self.Foie)
+		
+		pHaut1.add(self.Canvas2)
+		
+		pHaut2.add(self.Sein)
+		pHaut2.add(self.Canvas3)
+		
+		pHaut2.add(self.Peau)
+		pHaut2.add(self.Canvas4)
+		
+		
 		pHaut.add(pHaut1)
 		pHaut.add(pHaut2)
 		
@@ -130,10 +156,12 @@ class frame:
 		
 		
 
+
 		self.pBas = PanedWindow(self.fenetre, orient=HORIZONTAL)
 		self.pBas.pack(side=TOP)
-		pBas1 = PanedWindow(self.pBas, orient=VERTICAL,height=200,width=300)
-		pBas2 = PanedWindow(self.pBas, orient=VERTICAL,height=200,width=300)
+		pBas1 = PanedWindow(self.pBas, orient=VERTICAL,height=150,width=700)
+		pBas2 = PanedWindow(self.pBas, orient=VERTICAL,height=150,width=700)
+
 
 		self.pBas.add(pBas1)
 		self.pBas.add(pBas2)
@@ -144,30 +172,34 @@ class frame:
 		#                                     Boutons                                        #
 		######################################################################################
 
+		pBas11 = PanedWindow(pBas1, orient=HORIZONTAL,height=75,width=700)
+		pBas12 = PanedWindow(pBas1, orient=HORIZONTAL,height=75,width=700)
 		
+		pBas1.add(pBas11)
+		pBas1.add(pBas12)
 
-		boutonLung= Button(self.fenetre, text="Tracer courbes Poumon", command=self.TracerCourbeLung, height=3, width=3)
+		boutonLung= Button(self.fenetre, text="Tracer courbes Poumon", command=self.TracerCourbeLung)
 		boutonLung.pack()
 		
-		boutonBreast= Button(self.fenetre, text="Tracer courbes Sein", command=self.TracerCourbeBreast, height=3, width=3)
+		boutonBreast= Button(self.fenetre, text="Tracer    courbes    Sein", command=self.TracerCourbeBreast)
 		boutonBreast.pack()
 		
-		boutonLiver= Button(self.fenetre, text="Tracer courbes Foie", command=self.TracerCourbeLiver, height=3, width=3)
+		boutonLiver= Button(self.fenetre, text="Tracer courbes Foie", command=self.TracerCourbeLiver)
 		boutonLiver.pack()
 		
-		boutonSkin= Button(self.fenetre, text="Tracer courbes Peau", command=self.TracerCourbeSkin, height=3, width=3)
+		boutonSkin= Button(self.fenetre, text="Tracer courbes Peau", command=self.TracerCourbeSkin)
 		boutonSkin.pack()
 
-		pBas1.add(boutonBreast)
-		pBas1.add(boutonLiver)
-		pBas1.add(boutonLung)
-		pBas1.add(boutonSkin)
+		pBas11.add(boutonBreast)
+		pBas11.add(boutonLiver)
+		pBas12.add(boutonLung)
+		pBas12.add(boutonSkin)
 		
 		#Bouton pour intervention chirurgicale
 		self.buttonSurgery=False
 		bSurgery=Button(self.fenetre,text="Intervention chirurgicale",command=self.setSurgery, height=3, width=3)
 		bSurgery.pack()
-		pBas1.add(bSurgery)
+		pBas2.add(bSurgery)
 
 		"""
 		######################################################################################
