@@ -82,21 +82,21 @@ class frame:
 		self.Canvas4= Canvas(self.fenetre, width=350, height=350,bg='white') 
 		self.Canvas4.create_rectangle(1,1,349,349) 
 		
-		txt=StringVar()
-		txt.set("Poumon")
-		self.Poumon = Label(self.fenetre, textvariable=txt)
+		self.txt=StringVar()
+		self.txt.set("Poumon")
+		self.Poumon = Label(self.fenetre, textvariable=self.txt)
 		
-		txt2=StringVar()
-		txt2.set("Sein")
-		self.Sein = Label(self.fenetre, textvariable=txt2)
+		self.txt2=StringVar()
+		self.txt2.set("Sein")
+		self.Sein = Label(self.fenetre, textvariable=self.txt2)
 		
-		txt3=StringVar()
-		txt3.set("Foie")
-		self.Foie = Label(self.fenetre, textvariable=txt3)
+		self.txt3=StringVar()
+		self.txt3.set("Foie")
+		self.Foie = Label(self.fenetre, textvariable=self.txt3)
 		
-		txt4=StringVar()
-		txt4.set("Peau")
-		self.Peau = Label(self.fenetre, textvariable=txt4)
+		self.txt4=StringVar()
+		self.txt4.set("Peau")
+		self.Peau = Label(self.fenetre, textvariable=self.txt4)
 		
 		pHaut1.add(self.Poumon)
 
@@ -277,56 +277,68 @@ class frame:
 		self.TraceCourbeBreast =False
 		self.TraceCourbeSkin =False
 		self.TraceCourbeLiver =False
-		print "coucou"
+
 			
-	def draw_organ(self,name,org,orgEntier):
+	def draw_organ(self,org):
 		
 		cs = 5
-		if name=='Lung':
+		if org.name=='Lung':
 			
-			for i in xrange(len(org)):
-				x=i%int(math.sqrt(len(org)))
-				y=i/int(math.sqrt(len(org)))
-				if org[i] != self.cells_memorize[0][i] :	
-					if org[i]=='H':
+			for i in xrange(len(org.cells)):
+				x=i%int(math.sqrt(len(org.cells)))
+				y=i/int(math.sqrt(len(org.cells)))
+				if org.cells[i] != self.cells_memorize[0][i] :	
+					if org.cells[i]=='H':
 						self.Canvas1.create_oval(cs*x+10,cs*y+10,cs*x+11,cs*y+11,outline='green')
-					elif org[i]=='T':
+					elif org.cells[i]=='T':
 						self.Canvas1.create_oval(cs*x+10,cs*y+10,cs*x+11,cs*y+11,outline='red')
-			self.cells_memorize[0] = list(org)
+			self.cells_memorize[0] = list(org.cells)
 
-		elif name=='Liver':
-			for i in xrange(len(org)):
-				x=i%int(math.sqrt(len(org)))
-				y=i/int(math.sqrt(len(org)))
-				if org[i] != self.cells_memorize[1][i] :	
-					if org[i]=='H':
+			self.txt.set(" ".join(["Poumon \t Immun. : ",str("%.3f" % org.status['I'])]))
+
+
+		elif org.name=='Liver':
+			for i in xrange(len(org.cells)):
+				x=i%int(math.sqrt(len(org.cells)))
+				y=i/int(math.sqrt(len(org.cells)))
+				if org.cells[i] != self.cells_memorize[1][i] :	
+					if org.cells[i]=='H':
 						self.Canvas2.create_oval(cs*x+10,cs*y+10,cs*x+11,cs*y+11,outline='green')
-					elif org[i]=='T':
+					elif org.cells[i]=='T':
 						self.Canvas2.create_oval(cs*x+10,cs*y+10,cs*x+11,cs*y+11,outline='red')			
-			self.cells_memorize[1] = list(org)
+			self.cells_memorize[1] = list(org.cells)
 
-		elif name=='Breast':
+			self.txt3.set(" ".join(["Foie \t Immun. : ",str("%.3f" % org.status['I'])]))
+
+
+		elif org.name=='Breast':
 			
-			for i in xrange(len(org)):
-				x=i%int(math.sqrt(len(org)))
-				y=i/int(math.sqrt(len(org)))
-				if org[i] != self.cells_memorize[2][i] :	
-					if org[i]=='H':
+			for i in xrange(len(org.cells)):
+				x=i%int(math.sqrt(len(org.cells)))
+				y=i/int(math.sqrt(len(org.cells)))
+				if org.cells[i] != self.cells_memorize[2][i] :	
+					if org.cells[i]=='H':
 						self.Canvas3.create_oval(cs*x+10,cs*y+10,cs*x+11,cs*y+11,outline='green')
-					elif org[i]=='T':
+					elif org.cells[i]=='T':
 						self.Canvas3.create_oval(cs*x+10,cs*y+10,cs*x+11,cs*y+11,outline='red')
-			self.cells_memorize[2] = list(org)
+			self.cells_memorize[2] = list(org.cells)
 
-		elif name=='Skin':
-			for i in xrange(len(org)):
-				x=i%int(math.sqrt(len(org)))
-				y=i/int(math.sqrt(len(org)))
-				if org[i] != self.cells_memorize[3][i] :	
-					if org[i]=='H':
+			self.txt2.set(" ".join(["Sein \t Immun. : ",str("%.3f" % org.status['I'])]))
+
+
+		elif org.name=='Skin':
+			for i in xrange(len(org.cells)):
+				x=i%int(math.sqrt(len(org.cells)))
+				y=i/int(math.sqrt(len(org.cells)))
+				if org.cells[i] != self.cells_memorize[3][i] :	
+					if org.cells[i]=='H':
 						self.Canvas4.create_oval(cs*x+10,cs*y+10,cs*x+11,cs*y+11,outline='green')
-					elif org[i]=='T':
+					elif org.cells[i]=='T':
 						self.Canvas4.create_oval(cs*x+10,cs*y+10,cs*x+11,cs*y+11,outline='red')
-			self.cells_memorize[3] = list(org)
+			self.cells_memorize[3] = list(org.cells)
+
+			self.txt4.set(" ".join(["Peau \t Immun. : ",str("%.3f" % org.status['I'])]))
+
 
 		# prise en compte actions utilisateur
 		self.fenetre.update_idletasks()
