@@ -150,7 +150,7 @@ class frame:
 		
 		
 		
-		self.Slider = Scale(self.fenetre, from_ = 0, to = 10, resolution = 0.01)
+		self.Slider = Scale(self.fenetre, from_ = 0, to = 20, resolution = 0.1)
 		self.Slider.pack()
 		pHaut.add(self.Slider)
 		
@@ -267,8 +267,8 @@ class frame:
 	def TracerCourbeSkin(self):
 		self.TraceCourbeSkin = True
 
-	def fonction(self,pn,pt,pi):
-		f= intTest.fenetre2(pn,pt,pi)
+	def fonction(self,pn,pt,pi,v):
+		f= intTest.fenetre2(pn,pt,pi,v)
 		self.TraceCourbeLung =False
 		self.TraceCourbeBreast =False
 		self.TraceCourbeSkin =False
