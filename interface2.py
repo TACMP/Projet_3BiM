@@ -5,8 +5,7 @@ import math
 import time
 import intTest
 import pylab      
-import random
-import os
+import random       
 
 
 
@@ -54,9 +53,6 @@ class frame:
 		self.TraceCourbeBreast =False
 		self.TraceCourbeSkin =False
 		self.TraceCourbeLiver =False
-
-
-		self.reset = False
 		
 		
 		
@@ -118,6 +114,7 @@ class frame:
 		
 		
 		################################"""
+		
 	
 		global t,dt,nbT,nbH,temps,valT,valH
 		t=0
@@ -132,6 +129,7 @@ class frame:
 		valH.append(nbH)
 		print len(temps), len(valT)
 		
+		
 		################################"
 
 		panneau1.add(pHaut)
@@ -141,7 +139,7 @@ class frame:
 		
 		
 		
-		self.Slider = Scale(self.fenetre, from_ = 0, to = 20, resolution = 0.1)
+		self.Slider = Scale(self.fenetre, from_ = 0, to = 10, resolution = 0.01)
 		self.Slider.pack()
 		pHaut.add(self.Slider)
 		
@@ -181,20 +179,19 @@ class frame:
 		boutonSkin= Button(self.fenetre, text="Tracer courbes Peau", command=self.TracerCourbeSkin)
 		boutonSkin.pack()
 
-		boutonReset = Button(self.fenetre, text="RESET", command=self.Reset)
-
 		pBas11.add(boutonBreast)
 		pBas11.add(boutonLiver)
 		pBas12.add(boutonLung)
 		pBas12.add(boutonSkin)
-		pBas12.add(boutonReset)
 		
 		#Bouton pour intervention chirurgicale
 		self.buttonSurgery=False
 		bSurgery=Button(self.fenetre,text="Intervention chirurgicale",command=self.setSurgery, height=3, width=3)
 		bSurgery.pack()
 		pBas2.add(bSurgery)
-
+		
+		self.fichierPoumon = open("StockageDonneesPoumon.txt","w")
+		
 		"""
 		######################################################################################
 		#                                     CheckBoxs                                      #
@@ -219,6 +216,7 @@ class frame:
 	def run2(self,org):
 		global  t,dt,nbT,nbH,temps,valT,valH
 		
+		
 		#if t==0
 		t=t+dt
 		temps.append(t)
@@ -227,26 +225,8 @@ class frame:
 		nbH = org.status['H']
 		valT.append(nbT)
 		valH.append(nbH)
-		"""
-		self.b.plot(temps,valT,'r-')
-		self.b.plot(temps,valH,'b-')
+		self.fichierPoumon.write(str(t)+ "	" +str(nbT) + "	" +  str(nbH) + "\n")
 		
-		self.b.plot(t,nbT,'r-')
-		self.b.plot(t,nbH,'b-')
-		
-		self.canvas._tkcanvas.create_oval(t, nbT,t+0.1,nbT+0.1, 'r-')
-		self.canvas._tkcanvas.create_oval(t, nbH,t+0.1,nbH +0.1, 'b-')
-		"""
-		#self.b.plot(temps,valT,'r-')
-		#self.b.plot(temps,valH,'b-')
-
-		"""
-		if len(temps)>=100:
-			pylab.axis([max(temps)-5,max(temps)+0.1,min(min(valT),min(valH))-0.1,max(max(valT),max(valH))+0.1])
-		else:
-			pylab.axis([min(temps)-0.1,max(temps)+0.1,min(min(valT),min(valH))-0.1,max(max(valT),max(valH))+0.1])
-		"""
-		#self.canvas.draw()
 		
 	def TracerCourbeLung(self):
 		self.TraceCourbeLung = True
@@ -260,8 +240,8 @@ class frame:
 	def TracerCourbeSkin(self):
 		self.TraceCourbeSkin = True
 
-	def fonction(self,pn,pt,pi,v):
-		f= intTest.fenetre2(pn,pt,pi,v)
+	def fonction(self,pn,pt,pi):
+		f= intTest.fenetre2(pn,pt,pi)
 		self.TraceCourbeLung =False
 		self.TraceCourbeBreast =False
 		self.TraceCourbeSkin =False
@@ -331,14 +311,7 @@ class frame:
 		s.set(message)
 		death=Label(t, textvariable=s)
 		death.pack()
-
-		while self.reset == False :
-
-			self.fenetre.update_idletasks()
-			self.fenetre.update()
-
-		self.Reset()
-
+		self.fenetre.mainloop()
 		#a faire : un reset quand on ferme la fenetre message
 		
 	def setSurgery(self):
@@ -350,9 +323,4 @@ class frame:
 		org.status['T']-=remove
 		org.status['H']+=remove
 		self.buttonSurgery=False
-
-
-	def Reset(self) :
-
-		self.fenetre.destroy()
-		os.system("python TACMP.py")
+		
