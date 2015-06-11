@@ -6,7 +6,7 @@ import profile
 import math
 import random
 import time
-import interface
+import interface2
 
 #random.seed(255)
 
@@ -49,7 +49,7 @@ class Woman :
 
 		self.initiate_tumor()						# creating primary tumor
 
-		self.I = interface.frame()
+		self.I = interface2.frame()
 	
 
 		for org in (self.body).values() :
