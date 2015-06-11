@@ -24,7 +24,7 @@ import interface
 # -__-__-__-__-__-__-__-__-__-_-_-__-__-__-__-__-__-__-__- #
 
 pillis_parameters = {'a1':0.2,'a2':0.3,'a3':0.1,'b1':1,'b2':1,'c1':1,'c2':0.5,'c3':1,'c4':1,'d1':0.2,'d2':1,'r1':1.5,'r2':1,'s':0.33,'alpha':0.3,'rho':0.01,'v':0}
-default_parameters = {'a1':0.2,'a2':0.4,'a3':0.1,'b1':1,'b2':1,'c1':1,'c2':0.4,'c3':1,'c4':1,'d1':0.2,'d2':1,'r1':1.6,'r2':1,'s':0.33,'alpha':0.3,'rho':0.2,'v':0}
+default_parameters = {'a1':0.25,'a2':0.4,'a3':0.1,'b1':1,'b2':1,'c1':1,'c2':0.35,'c3':1,'c4':1,'d1':0.2,'d2':1,'r1':1.6,'r2':1,'s':0.33,'alpha':0.3,'rho':0.2,'v':0}
 
 simul_step = 0.01
 simul_time = 0
@@ -42,7 +42,7 @@ class Woman :
 
 		# -__-__-__-__-   Probabilities of tumor apparition / metastasis departure (from the concerned site) / metastasis arrival   -__-__-__-__- #
 		self.tumor_probs = {'Breast' : 0.3, 'Liver' : 0.15, 'Lung' : 0.45, 'Skin' : 0.1}
-		self.mts_appear_probs = {'Breast' : 0.001, 'Liver' : 0.0001, 'Lung' : 0.0004, 'Skin' : 0.002}
+		self.mts_appear_probs = {'Breast' : 0.0008, 'Liver' : 0.0001, 'Lung' : 0.00035, 'Skin' : 0.0015}
 		self.mts_transfer_probs = {'Breast_Breast' : 0.05, 'Breast_Liver' : 0.6, 'Breast_Lung' : 0.3, 'Breast_Skin' : 0.05, 'Liver_Breast' : 0.05, 'Liver_Liver' : 0.4, 'Liver_Lung' : 0.45, 'Liver_Skin' : 0.1, 'Lung_Breast' : 0.1, 'Lung_Liver' : 0.5, 'Lung_Lung' : 0.25, 'Lung_Skin' : 0.15, 'Skin_Breast' : 0.05, 'Skin_Liver' : 0.4, 'Skin_Lung' : 0.35, 'Skin_Skin' : 0.2}
 
 		self.initiate_tumor()						# creating primary tumor
@@ -51,7 +51,7 @@ class Woman :
 	
 
 		for org in (self.body).values() :
-			self.I.draw_organ(org.name,org.cells,org)
+			self.I.draw_organ(org)
 			
 
 	# -__-__-__-__-   Only called by __init__, this method chooses the first affected organ, and then calls a method to effectively create the initial tumor   -__-__-__-__- #
@@ -125,11 +125,9 @@ class Woman :
 							print org.status
 						else :																# else we update her status, according to the model (one iteration)
 							org.rK4(org.status['H'], org.status['T'], org.status['I'], org.status['U'], org.fh, org.ft, org.fi, org.fu, simul_step)
-						org.update_layout(simul_time)	
-						#if org.name=='Lung':
-							#self.I.run(org)											# we then update the layout (the grid drawn in the window) according to the values predicted by the equations
+						org.update_layout(simul_time)											# we then update the layout (the grid drawn in the window) according to the values predicted by the equations
 						self.I.run(org)
-						self.I.draw_organ(org.name,org.cells,org)
+						self.I.draw_organ(org)
 						
 						org.parameters['v'] = self.I.update_treatment()
 
