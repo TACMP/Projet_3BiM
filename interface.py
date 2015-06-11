@@ -5,7 +5,8 @@ import math
 import time
 import intTest
 import pylab      
-import random       
+import random
+import os
 
 
 
@@ -53,6 +54,9 @@ class frame:
 		self.TraceCourbeBreast =False
 		self.TraceCourbeSkin =False
 		self.TraceCourbeLiver =False
+
+
+		self.reset = False
 		
 		
 		
@@ -114,7 +118,6 @@ class frame:
 		
 		
 		################################"""
-		
 	
 		global t,dt,nbT,nbH,temps,valT,valH
 		t=0
@@ -127,8 +130,7 @@ class frame:
 		nbH=0
 		valT.append(nbT)
 		valH.append(nbH)
-		print len(temps), len(valT)
-		
+
 		
 		################################"
 
@@ -139,7 +141,7 @@ class frame:
 		
 		
 		
-		self.Slider = Scale(self.fenetre, from_ = 0, to = 10, resolution = 0.01)
+		self.Slider = Scale(self.fenetre, from_ = 0, to = 20, resolution = 0.1)
 		self.Slider.pack()
 		pHaut.add(self.Slider)
 		
@@ -179,10 +181,13 @@ class frame:
 		boutonSkin= Button(self.fenetre, text="Tracer courbes Peau", command=self.TracerCourbeSkin)
 		boutonSkin.pack()
 
+		boutonReset = Button(self.fenetre, text="RESET", command=self.Reset)
+
 		pBas11.add(boutonBreast)
 		pBas11.add(boutonLiver)
 		pBas12.add(boutonLung)
 		pBas12.add(boutonSkin)
+		pBas12.add(boutonReset)
 		
 		#Bouton pour intervention chirurgicale
 		self.buttonSurgery=False
@@ -208,14 +213,17 @@ class frame:
 		
 		
 		self.var_caseSkin= IntVar()
+		self.var_caseSkin.set(1)
 		caseSkin = Checkbutton(self.fenetre, text="Enregistrer les données de la peau", variable=self.var_caseSkin)
 		caseSkin.pack()
 
 		self.var_caseLiver = IntVar()
+		self.var_caseLiver.set(1)
 		caseLiver = Checkbutton(self.fenetre, text="Enregistrer les données du foie", variable=self.var_caseLiver)
 		caseLiver.pack()
 		
 		self.var_caseBreast = IntVar()
+		self.var_caseBreast.set(1)
 		caseBreast = Checkbutton(self.fenetre, text="Enregistrer les données du poumon", variable=self.var_caseBreast)
 		caseBreast.pack()
 
@@ -232,9 +240,7 @@ class frame:
 
 	def run(self,org):
 		global  t,dt,nbT,nbH,temps,valT,valH
-		
-		
-		#if t==0
+
 		t=t+dt
 		temps.append(t)
 		
@@ -251,7 +257,7 @@ class frame:
 			self.fileSkin.write(str(t)+ "	" +str(nbT) + "	" +  str(nbH) + "\n")
 		elif org.name=="Liver" and self.var_caseLiver.get()==1:
 			self.fileLiver.write(str(t)+ "	" +str(nbT) + "	" +  str(nbH) + "\n")
-		
+
 		
 	def TracerCourbeLung(self):
 		self.TraceCourbeLung = True
@@ -265,8 +271,8 @@ class frame:
 	def TracerCourbeSkin(self):
 		self.TraceCourbeSkin = True
 
-	def fonction(self,pn,pt,pi):
-		f= intTest.fenetre2(pn,pt,pi)
+	def fonction(self,pn,pt,pi,v):
+		f= intTest.fenetre2(pn,pt,pi,v)
 		self.TraceCourbeLung =False
 		self.TraceCourbeBreast =False
 		self.TraceCourbeSkin =False
@@ -336,7 +342,14 @@ class frame:
 		s.set(message)
 		death=Label(t, textvariable=s)
 		death.pack()
-		self.fenetre.mainloop()
+
+		while self.reset == False :
+
+			self.fenetre.update_idletasks()
+			self.fenetre.update()
+
+		self.Reset()
+
 		#a faire : un reset quand on ferme la fenetre message
 		
 	def setSurgery(self):
@@ -348,4 +361,9 @@ class frame:
 		org.status['T']-=remove
 		org.status['H']+=remove
 		self.buttonSurgery=False
-		
+
+
+	def Reset(self) :
+
+		self.fenetre.destroy()
+		os.system("python TACMP.py")
