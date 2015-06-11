@@ -130,7 +130,7 @@ class frame:
 		nbH=0
 		valT.append(nbT)
 		valH.append(nbH)
-		print len(temps), len(valT)
+
 		
 		################################"
 
@@ -141,7 +141,7 @@ class frame:
 		
 		
 		
-		self.Slider = Scale(self.fenetre, from_ = 0, to = 10, resolution = 0.01)
+		self.Slider = Scale(self.fenetre, from_ = 0, to = 20, resolution = 0.1)
 		self.Slider.pack()
 		pHaut.add(self.Slider)
 		
@@ -194,59 +194,70 @@ class frame:
 		bSurgery=Button(self.fenetre,text="Intervention chirurgicale",command=self.setSurgery, height=3, width=3)
 		bSurgery.pack()
 		pBas2.add(bSurgery)
-
-		"""
+		
+		self.fileLung = open("StockageDonneesLung.txt","w")
+		self.fileLiver = open("StockageDonneesLiver.txt","w")
+		self.fileBreast = open("StockageDonneesBreast.txt","w")
+		self.fileSkin = open("StockageDonneesSkin.txt","w")
+		
+		
 		######################################################################################
 		#                                     CheckBoxs                                      #
 		######################################################################################
 
-		var_case1 = IntVar()
-		case1 = Checkbutton(self.fenetre, text="Ne plus poser cette question", variable=var_case1)
-		case1.pack()
-
-		var_case2 = IntVar()
-		case2 = Checkbutton(self.fenetre, text="Poser encore cette question", variable=var_case2)
-		case2.pack()
-
-		pBas2.add(case1)
-		pBas2.add(case2)
+		self.var_caseLung = IntVar()
+		self.var_caseLung.set(1)
+		caseLung = Checkbutton(self.fenetre, text="Enregistrer les données du poumon", variable=self.var_caseLung)
+		caseLung.pack()
+		#print "",var_caseLung.get()
 		
-"""
+		
+		self.var_caseSkin= IntVar()
+		self.var_caseSkin.set(1)
+		caseSkin = Checkbutton(self.fenetre, text="Enregistrer les données de la peau", variable=self.var_caseSkin)
+		caseSkin.pack()
+
+		self.var_caseLiver = IntVar()
+		self.var_caseLiver.set(1)
+		caseLiver = Checkbutton(self.fenetre, text="Enregistrer les données du foie", variable=self.var_caseLiver)
+		caseLiver.pack()
+		
+		self.var_caseBreast = IntVar()
+		self.var_caseBreast.set(1)
+		caseBreast = Checkbutton(self.fenetre, text="Enregistrer les données du poumon", variable=self.var_caseBreast)
+		caseBreast.pack()
+
+		pBas2.add(caseLung)
+		pBas2.add(caseSkin)
+		pBas2.add(caseLiver)
+		pBas2.add(caseBreast)
+		
+
 		
 		
 		self.pBas.pack()
+	
 
-	def run2(self,org):
+	def run(self,org):
 		global  t,dt,nbT,nbH,temps,valT,valH
-		
-		#if t==0
+
 		t=t+dt
 		temps.append(t)
 		
 		nbT = org.status['T']
 		nbH = org.status['H']
+		
 		valT.append(nbT)
 		valH.append(nbH)
-		"""
-		self.b.plot(temps,valT,'r-')
-		self.b.plot(temps,valH,'b-')
-		
-		self.b.plot(t,nbT,'r-')
-		self.b.plot(t,nbH,'b-')
-		
-		self.canvas._tkcanvas.create_oval(t, nbT,t+0.1,nbT+0.1, 'r-')
-		self.canvas._tkcanvas.create_oval(t, nbH,t+0.1,nbH +0.1, 'b-')
-		"""
-		#self.b.plot(temps,valT,'r-')
-		#self.b.plot(temps,valH,'b-')
+		if org.name=="Lung" and self.var_caseLung.get()==1:
+			self.fileLung.write(str(t)+ "	" +str(nbT) + "	" +  str(nbH) + "\n")
+		elif org.name=="Breast" and self.var_caseBreast.get()==1:
+			self.fileBreast.write(str(t)+ "	" +str(nbT) + "	" +  str(nbH) + "\n")
+		elif org.name=="Skin" and self.var_caseSkin.get()==1:
+			self.fileSkin.write(str(t)+ "	" +str(nbT) + "	" +  str(nbH) + "\n")
+		elif org.name=="Liver" and self.var_caseLiver.get()==1:
+			self.fileLiver.write(str(t)+ "	" +str(nbT) + "	" +  str(nbH) + "\n")
 
-		"""
-		if len(temps)>=100:
-			pylab.axis([max(temps)-5,max(temps)+0.1,min(min(valT),min(valH))-0.1,max(max(valT),max(valH))+0.1])
-		else:
-			pylab.axis([min(temps)-0.1,max(temps)+0.1,min(min(valT),min(valH))-0.1,max(max(valT),max(valH))+0.1])
-		"""
-		#self.canvas.draw()
 		
 	def TracerCourbeLung(self):
 		self.TraceCourbeLung = True
@@ -260,8 +271,8 @@ class frame:
 	def TracerCourbeSkin(self):
 		self.TraceCourbeSkin = True
 
-	def fonction(self,pn,pt,pi):
-		f= intTest.fenetre2(pn,pt,pi)
+	def fonction(self,pn,pt,pi,v):
+		f= intTest.fenetre2(pn,pt,pi,v)
 		self.TraceCourbeLung =False
 		self.TraceCourbeBreast =False
 		self.TraceCourbeSkin =False

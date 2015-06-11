@@ -127,8 +127,9 @@ class Woman :
 						else :																# else we update her status, according to the model (one iteration)
 							org.rK4(org.status['H'], org.status['T'], org.status['I'], org.status['U'], org.fh, org.ft, org.fi, org.fu, simul_step)
 						org.update_layout(simul_time)	
-						if org.name=='Lung':
-							self.I.run2(org)											# we then update the layout (the grid drawn in the window) according to the values predicted by the equations
+						#if org.name=='Lung':
+							#self.I.run(org)											# we then update the layout (the grid drawn in the window) according to the values predicted by the equations
+						self.I.run(org)
 						self.I.draw_organ(org.name,org.cells,org)
 						
 						org.parameters['v'] = self.I.update_treatment()
@@ -145,16 +146,16 @@ class Woman :
 				#time.sleep(0.5)
 				
 				if self.I.TraceCourbeLung == True :
-					self.I.fonction(self.body['Lung'].status['H'],self.body['Lung'].status['T'],self.body['Lung'].status['I'])
+					self.I.fonction(self.body['Lung'].status['H'],self.body['Lung'].status['T'],self.body['Lung'].status['I'],org.parameters['v'])
 					
 				if self.I.TraceCourbeBreast == True :
-					self.I.fonction(self.body['Breast'].status['H'],self.body['Breast'].status['T'],self.body['Breast'].status['I'])
+					self.I.fonction(self.body['Breast'].status['H'],self.body['Breast'].status['T'],self.body['Breast'].status['I'],org.parameters['v'])
 					
 				if self.I.TraceCourbeSkin == True :
-					self.I.fonction(self.body['Skin'].status['H'],self.body['Skin'].status['T'],self.body['Skin'].status['I'])
+					self.I.fonction(self.body['Skin'].status['H'],self.body['Skin'].status['T'],self.body['Skin'].status['I'],org.parameters['v'])
 				
 				if self.I.TraceCourbeLiver == True :
-					self.I.fonction(self.body['Liver'].status['H'],self.body['Liver'].status['T'],self.body['Liver'].status['I'])
+					self.I.fonction(self.body['Liver'].status['H'],self.body['Liver'].status['T'],self.body['Liver'].status['I'],org.parameters['v'])
 
 
 	# -__-__-__-__-__-__-__-__-__-__-__-__-__-__-__-__-__-__-__-__-__-__-__-__-__-__-__-__-__-__-__-__-__-__-__-__-__-__-__-__-__-__-__-__-__-__- #
