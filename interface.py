@@ -118,15 +118,6 @@ class frame:
 		
 		
 		################################"""
-		#self.CanvasCourbes = Canvas(self.fenetre, width=600, height=300,bg='white')
-		self.fig = pylab.figure()
-		self.b = self.fig.add_subplot(111)
-		self.canvas = FigureCanvasTkAgg(self.fig, master=pDroite)
-		self.canvas.show()
-		self.canvas.get_tk_widget().pack(side=TOP, fill=BOTH, expand=1)
-		toolbar = NavigationToolbar2TkAgg(self.canvas, self.fenetre)
-		toolbar.update()
-		self.canvas._tkcanvas.pack()
 	
 		global t,dt,nbT,nbH,temps,valT,valH
 		t=0
@@ -140,10 +131,6 @@ class frame:
 		valT.append(nbT)
 		valH.append(nbH)
 		print len(temps), len(valT)
-		self.b.plot(temps,valT,'r-')
-		self.b.plot(temps,valH,'b-')
-
-		self.canvas.show()
 		
 		################################"
 
@@ -232,7 +219,6 @@ class frame:
 	def run2(self,org):
 		global  t,dt,nbT,nbH,temps,valT,valH
 		
-		self.b.clear()
 		#if t==0
 		t=t+dt
 		temps.append(t)
@@ -251,8 +237,8 @@ class frame:
 		self.canvas._tkcanvas.create_oval(t, nbT,t+0.1,nbT+0.1, 'r-')
 		self.canvas._tkcanvas.create_oval(t, nbH,t+0.1,nbH +0.1, 'b-')
 		"""
-		self.b.plot(temps,valT,'r-')
-		self.b.plot(temps,valH,'b-')
+		#self.b.plot(temps,valT,'r-')
+		#self.b.plot(temps,valH,'b-')
 
 		"""
 		if len(temps)>=100:
@@ -260,7 +246,7 @@ class frame:
 		else:
 			pylab.axis([min(temps)-0.1,max(temps)+0.1,min(min(valT),min(valH))-0.1,max(max(valT),max(valH))+0.1])
 		"""
-		self.canvas.draw()
+		#self.canvas.draw()
 		
 	def TracerCourbeLung(self):
 		self.TraceCourbeLung = True

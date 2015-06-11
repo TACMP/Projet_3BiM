@@ -7,6 +7,7 @@ import matplotlib
 matplotlib.use('TkAgg')
 from numpy import *
 import pylab as p
+from scipy import integrate
 from numpy import arange, sin, pi,array
 
 class fenetre2:
