@@ -6,7 +6,7 @@ import profile
 import math
 import random
 import time
-import interface2
+import interface
 
 #random.seed(255)
 
@@ -49,7 +49,7 @@ class Woman :
 
 		self.initiate_tumor()						# creating primary tumor
 
-		self.I = interface2.frame()
+		self.I = interface.frame()
 	
 
 		for org in (self.body).values() :
@@ -128,8 +128,9 @@ class Woman :
 						else :																# else we update her status, according to the model (one iteration)
 							org.rK4(org.status['H'], org.status['T'], org.status['I'], org.status['U'], org.fh, org.ft, org.fi, org.fu, simul_step)
 						org.update_layout(simul_time)	
-						if org.name=='Lung':
-							self.I.run2(org)											# we then update the layout (the grid drawn in the window) according to the values predicted by the equations
+						#if org.name=='Lung':
+							#self.I.run(org)											# we then update the layout (the grid drawn in the window) according to the values predicted by the equations
+						self.I.run(org)
 						self.I.draw_organ(org.name,org.cells,org)
 						
 						org.parameters['v'] = self.I.update_treatment()
