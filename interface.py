@@ -3,10 +3,11 @@
 from Tkinter import*
 import math
 import time
-import intTest
 import pylab      
 import random
 import os
+
+import intTest
 
 
 
@@ -23,13 +24,6 @@ class frame:
 	def __init__(self):
 		self.fenetre = Tk()
 		self.fenetre.geometry("1400x1400")
-		
-		"""
-		self.sickWoman = TACMP.Woman()
-		print Poor_girl
-		self.sickWoman.simul_RK()
-		print Poor_girl
-		"""
 
 		self.cells_memorize = []
 		for i in xrange(4) :
