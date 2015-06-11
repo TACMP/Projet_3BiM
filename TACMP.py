@@ -27,7 +27,6 @@ pillis_parameters = {'a1':0.2,'a2':0.3,'a3':0.1,'b1':1,'b2':1,'c1':1,'c2':0.5,'c
 default_parameters = {'a1':0.2,'a2':0.4,'a3':0.1,'b1':1,'b2':1,'c1':1,'c2':0.4,'c3':1,'c4':1,'d1':0.2,'d2':1,'r1':1.6,'r2':1,'s':0.33,'alpha':0.3,'rho':0.2,'v':0}
 
 simul_step = 0.01
-simul_length = 10000
 simul_time = 0
 
 #          |||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||          #
@@ -111,7 +110,7 @@ class Woman :
 				print s
 				check=1
 				self.I.death_message(s)
-			elif (self.alive == True) and (simul_time < simul_length) and check==0:					# simulation (currently) ends after a long time, or once the woman has died
+			elif (self.alive == True) and check==0:					# simulation (currently) ends after a long time, or once the woman has died
 				self.generate_metastasis(simul_time)
 				for org in (self.body).values() :
 					if org.status['T'] != 0:
@@ -143,7 +142,7 @@ class Woman :
 				self.isHealthy()
 				if simul_time%50==0 :
 					print simul_time
-				#time.sleep(0.5)
+				#time.sleep(0.1)
 				
 				if self.I.TraceCourbeLung == True :
 					self.I.fonction(self.body['Lung'].status['H'],self.body['Lung'].status['T'],self.body['Lung'].status['I'],org.parameters['v'])

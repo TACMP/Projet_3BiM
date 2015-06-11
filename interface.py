@@ -68,7 +68,30 @@ class frame:
 		
 		pHaut = PanedWindow(self.fenetre,orient=HORIZONTAL,height=750,width=800)
 		pDroite = PanedWindow(self.fenetre,orient=VERTICAL,height=750,width=400)
+		pDroite1= PanedWindow(pDroite, orient=VERTICAL,height=245,width=400)
+		pDroite2= PanedWindow(pDroite, orient=HORIZONTAL,height=245,width=400)
+		pDroite3= PanedWindow(pDroite, orient=VERTICAL,height=245,width=400)
+		
+		pDroite.add(pDroite1)
+		pDroite.add(pDroite2)
+		pDroite.add(pDroite3)
+		
+		boutonLung= Button(self.fenetre, text="Tracer courbes Poumon", command=self.TracerCourbeLung, height=3)
 
+		
+		boutonBreast= Button(self.fenetre, text="Tracer courbes Sein", command=self.TracerCourbeBreast, height=4)
+		
+		boutonLiver= Button(self.fenetre, text="Tracer courbes Foie", command=self.TracerCourbeLiver, height=3)
+
+		boutonSkin= Button(self.fenetre, text="Tracer courbes Peau", command=self.TracerCourbeSkin, height=4)
+
+		boutonReset = Button(self.fenetre, text="RESET", command=self.Reset)
+
+		pDroite1.add(boutonLung)
+		pDroite1.add(boutonBreast)
+		pDroite1.add(boutonLiver)
+		pDroite1.add(boutonSkin)	
+		
 		pHaut1 = PanedWindow(pHaut, orient=VERTICAL)
 		pHaut2 = PanedWindow(pHaut, orient=VERTICAL)
 		
@@ -137,6 +160,8 @@ class frame:
 		panneau1.add(pHaut)
 		panneau1.add(pDroite)
 		
+		
+		
 		panneau1.pack()
 		
 		
@@ -169,31 +194,16 @@ class frame:
 		pBas1.add(pBas11)
 		pBas1.add(pBas12)
 
-		boutonLung= Button(self.fenetre, text="Tracer courbes Poumon", command=self.TracerCourbeLung)
-		boutonLung.pack()
 		
-		boutonBreast= Button(self.fenetre, text="Tracer    courbes    Sein", command=self.TracerCourbeBreast)
-		boutonBreast.pack()
-		
-		boutonLiver= Button(self.fenetre, text="Tracer courbes Foie", command=self.TracerCourbeLiver)
-		boutonLiver.pack()
-		
-		boutonSkin= Button(self.fenetre, text="Tracer courbes Peau", command=self.TracerCourbeSkin)
-		boutonSkin.pack()
 
-		boutonReset = Button(self.fenetre, text="RESET", command=self.Reset)
-
-		pBas11.add(boutonBreast)
-		pBas11.add(boutonLiver)
-		pBas12.add(boutonLung)
-		pBas12.add(boutonSkin)
-		pBas12.add(boutonReset)
+		
 		
 		#Bouton pour intervention chirurgicale
 		self.buttonSurgery=False
-		bSurgery=Button(self.fenetre,text="Intervention chirurgicale",command=self.setSurgery, height=3, width=3)
-		bSurgery.pack()
-		pBas2.add(bSurgery)
+		bSurgery=Button(self.fenetre,text="Intervention \n chirurgicale",command=self.setSurgery, height=1, width=28)
+		#bSurgery.pack()
+		pDroite2.add(bSurgery)
+		pDroite2.add(boutonReset)
 		
 		self.fileLung = open("StockageDonneesLung.txt","w")
 		self.fileLiver = open("StockageDonneesLiver.txt","w")
@@ -207,30 +217,30 @@ class frame:
 
 		self.var_caseLung = IntVar()
 		self.var_caseLung.set(1)
-		caseLung = Checkbutton(self.fenetre, text="Enregistrer les données du poumon", variable=self.var_caseLung)
-		caseLung.pack()
+		caseLung = Checkbutton(self.fenetre, text="Enregistrer les données du poumon", variable=self.var_caseLung, height=4)
+		#caseLung.pack()
 		#print "",var_caseLung.get()
 		
 		
 		self.var_caseSkin= IntVar()
 		self.var_caseSkin.set(1)
-		caseSkin = Checkbutton(self.fenetre, text="Enregistrer les données de la peau", variable=self.var_caseSkin)
-		caseSkin.pack()
+		caseSkin = Checkbutton(self.fenetre, text="Enregistrer les données de la peau", variable=self.var_caseSkin, height=4)
+
 
 		self.var_caseLiver = IntVar()
 		self.var_caseLiver.set(1)
-		caseLiver = Checkbutton(self.fenetre, text="Enregistrer les données du foie", variable=self.var_caseLiver)
-		caseLiver.pack()
+		caseLiver = Checkbutton(self.fenetre, text="Enregistrer les données du foie", variable=self.var_caseLiver, height=4)
+
 		
 		self.var_caseBreast = IntVar()
 		self.var_caseBreast.set(1)
-		caseBreast = Checkbutton(self.fenetre, text="Enregistrer les données du poumon", variable=self.var_caseBreast)
-		caseBreast.pack()
+		caseBreast = Checkbutton(self.fenetre, text="Enregistrer les données du sein", variable=self.var_caseBreast, height=4)
 
-		pBas2.add(caseLung)
-		pBas2.add(caseSkin)
-		pBas2.add(caseLiver)
-		pBas2.add(caseBreast)
+
+		pDroite3.add(caseLung)
+		pDroite3.add(caseSkin)
+		pDroite3.add(caseLiver)
+		pDroite3.add(caseBreast)
 		
 
 		
