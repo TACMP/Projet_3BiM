@@ -5,7 +5,8 @@ import math
 import time
 import intTest
 import pylab      
-import random       
+import random
+import os
 
 
 
@@ -53,6 +54,9 @@ class frame:
 		self.TraceCourbeBreast =False
 		self.TraceCourbeSkin =False
 		self.TraceCourbeLiver =False
+
+
+		self.reset = False
 		
 		
 		
@@ -190,10 +194,13 @@ class frame:
 		boutonSkin= Button(self.fenetre, text="Tracer courbes Peau", command=self.TracerCourbeSkin)
 		boutonSkin.pack()
 
+		boutonReset = Button(self.fenetre, text="RESET", command=self.Reset)
+
 		pBas11.add(boutonBreast)
 		pBas11.add(boutonLiver)
 		pBas12.add(boutonLung)
 		pBas12.add(boutonSkin)
+		pBas12.add(boutonReset)
 		
 		#Bouton pour intervention chirurgicale
 		self.buttonSurgery=False
@@ -338,7 +345,14 @@ class frame:
 		s.set(message)
 		death=Label(t, textvariable=s)
 		death.pack()
-		self.fenetre.mainloop()
+
+		while self.reset == False :
+
+			self.fenetre.update_idletasks()
+			self.fenetre.update()
+
+		self.Reset()
+
 		#a faire : un reset quand on ferme la fenetre message
 		
 	def setSurgery(self):
@@ -350,4 +364,9 @@ class frame:
 		org.status['T']-=remove
 		org.status['H']+=remove
 		self.buttonSurgery=False
-		
+
+
+	def Reset(self) :
+
+		self.fenetre.destroy()
+		os.system("python TACMP.py")

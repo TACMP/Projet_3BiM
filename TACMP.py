@@ -30,7 +30,6 @@ simul_step = 0.01
 simul_length = 10000
 simul_time = 0
 
-
 #          |||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||          #
 
 
@@ -40,7 +39,7 @@ class Woman :
 
 		self.alive = True                          # becomes False and stops the program if woman dies from cancer (too many tumor cells in one organ)
 		self.healthy = False  						# becomes True if all tumor cells are removed
-		self.body = {'Breast' : Organ('Breast',65,default_parameters), 'Liver' : Organ('Liver',65,default_parameters), 'Lung' : Organ('Lung',65,default_parameters), 'Skin' : Organ('Skin',65,default_parameters)}      # dictionary of organs
+		self.body = {'Breast' : Organ('Breast',67,default_parameters), 'Liver' : Organ('Liver',67,default_parameters), 'Lung' : Organ('Lung',67,default_parameters), 'Skin' : Organ('Skin',67,default_parameters)}      # dictionary of organs
 
 		# -__-__-__-__-   Probabilities of tumor apparition / metastasis departure (from the concerned site) / metastasis arrival   -__-__-__-__- #
 		self.tumor_probs = {'Breast' : 0.3, 'Liver' : 0.15, 'Lung' : 0.45, 'Skin' : 0.1}
@@ -157,6 +156,7 @@ class Woman :
 				if self.I.TraceCourbeLiver == True :
 					self.I.fonction(self.body['Liver'].status['H'],self.body['Liver'].status['T'],self.body['Liver'].status['I'])
 
+
 	# -__-__-__-__-__-__-__-__-__-__-__-__-__-__-__-__-__-__-__-__-__-__-__-__-__-__-__-__-__-__-__-__-__-__-__-__-__-__-__-__-__-__-__-__-__-__- #
 	#																																		  	  #
 	# -__-__-__-__-__-__-__-__-__-__-__-__-__-__-__-__-__-__-__-__-__-__-__-__-__-__-__-__-__-__-__-__-__-__-__-__-__-__-__-__-__-__-__-__-__-__- #		
@@ -223,7 +223,7 @@ class Organ :
 	def create_tumor (self) :
 
 		# -__-__- Randomized initial size -__-__-
-		self.status['T'] = 0.001 + random.random()/50 						 # number of initial tumor cells, normalized
+		self.status['T'] = 0.002 + random.random()/50 						 # number of initial tumor cells, normalized
 		self.status['H'] = 1 - self.status['T']
 
 		# print int(self.status['T'] * self.size**2)                         # displays the number of initial tumor cells
@@ -466,8 +466,7 @@ class Organ :
 
 #          |||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||          #
 
-	def Test():
-		print "coucou coucou"
+
 
 Poor_girl = Woman()
 print Poor_girl
