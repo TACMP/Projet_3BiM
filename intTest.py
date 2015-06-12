@@ -82,7 +82,7 @@ class fenetre2:
 			a.plot(t,n,'r-',label='N')
 			a.plot(t,tt,'b-',label='T')
 			a.plot(t,i,'g-',label='I')
-			#a.plot(t,u,'y-',label='U')
+			a.plot(t,u,'y-',label='U')
 			a.legend(('cellules saines', 'cellules tumorales','cellules immunitaires'),'best')
 			c.show()
 		

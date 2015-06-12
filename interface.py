@@ -195,10 +195,10 @@ class frame:
 		bSurgery.pack()
 		pBas2.add(bSurgery)
 		
-		self.fileLung = open("StockageDonneesLung.txt","w")
-		self.fileLiver = open("StockageDonneesLiver.txt","w")
-		self.fileBreast = open("StockageDonneesBreast.txt","w")
-		self.fileSkin = open("StockageDonneesSkin.txt","w")
+		self.fileLung = open("StockageDonneesLung.txt","w+")
+		self.fileLiver = open("StockageDonneesLiver.txt","w+")
+		self.fileBreast = open("StockageDonneesBreast.txt","w+")
+		self.fileSkin = open("StockageDonneesSkin.txt","w+")
 		
 		
 		######################################################################################
@@ -224,7 +224,7 @@ class frame:
 		
 		self.var_caseBreast = IntVar()
 		self.var_caseBreast.set(1)
-		caseBreast = Checkbutton(self.fenetre, text="Enregistrer les données du poumon", variable=self.var_caseBreast)
+		caseBreast = Checkbutton(self.fenetre, text="Enregistrer les données du sein", variable=self.var_caseBreast)
 		caseBreast.pack()
 
 		pBas2.add(caseLung)
@@ -258,7 +258,45 @@ class frame:
 		elif org.name=="Liver" and self.var_caseLiver.get()==1:
 			self.fileLiver.write(str(t)+ "	" +str(nbT) + "	" +  str(nbH) + "\n")
 
+	def gnuplotFunction(self):
+		print "Je vais dans la fonction gnuplot"
 		
+		print self.fileLung.readline()
+
+		print self.fileBreast.readline()
+		
+		print self.fileSkin.readline()
+		print self.fileLiver.readline()
+
+		fichier1=open("commandeGNULung.txt","w") 
+		comm2="plot 'StockageDonneesLung.txt' using 1:2 with lines title 'Evolution du nombre de cellule tumorales' \n" 
+		#comm3="replot 'StockageDonneesLung.txt' using 1:3 with lines title 'Evolution du nombre de cellule saines' \n" 
+		fichier1.write(comm2) 
+		fichier1.write(comm3) 
+		fichier1.close() 
+		os.system("gnuplot "+"commandeGNULung.txt --persist")
+		
+
+		fichier2=open("commandeGNUBreast.txt","w") 
+		comm2="plot 'StockageDonneesBreast.txt' using 1:2 with lines title 'Evolution du nombre de cellule tumorales' \n" 
+		fichier2.write(comm2) 
+		fichier2.close() 
+		os.system("gnuplot "+"commandeGNUBreast.txt --persist")
+		
+
+		fichier3=open("commandeGNUSkin.txt","w") 
+		comm2="plot 'StockageDonneesSkin.txt' using 1:2 with lines title 'Evolution du nombre de cellule tumorales' \n" 
+		fichier3.write(comm2) 
+		fichier3.close() 
+		os.system("gnuplot "+"commandeGNUSkin.txt --persist")
+		
+
+		fichier4=open("commandeLiver.txt","w") 
+		comm2="plot 'StockageDonneesLiver.txt' using 1:2 with lines title 'Evolution du nombre de cellule tumorales' \n" 
+		fichier4.write(comm2) 
+		fichier4.close() 
+		os.system("gnuplot "+"commandeLiver.txt --persist")
+			
 	def TracerCourbeLung(self):
 		self.TraceCourbeLung = True
 		
@@ -337,6 +375,7 @@ class frame:
 		return self.Slider.get()
 		
 	def death_message(self,message):
+		self.gnuplotFunction()
 		t=Toplevel()
 		s=StringVar()
 		s.set(message)
