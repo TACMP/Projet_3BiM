@@ -226,6 +226,7 @@ class Organ :
 		# for method "update_layout"
 		self.possible_locations_add = []
 		self.possible_locations_del = []
+		self.last_possible_locations_update = 0
 
 		# memorizing where tumor cells have (dis)appeared, for faster performances (even though it has quite nothing to do here :/)
 		self.cells_switched = []
@@ -317,7 +318,10 @@ class Organ :
 
 		if new_tumor_cells > 0 :														  # if we need to add tumor cells :
 
-			if len(self.possible_locations_add) - new_tumor_cells < 20 :						# if there are too few locations avilable
+			# # if there are too few locations avilable, or the grid hasn't been updated for a while
+			if (len(self.possible_locations_add) - new_tumor_cells < 20) or (simul_time - self.last_possible_locations_update > 50) :						
+
+				self.last_possible_locations_update = simul_time
 
 				self.possible_locations_add = []												# we search all possible locations of expansion (i.e. healthy cells close to a tumor cell)
 
@@ -356,7 +360,9 @@ class Organ :
 
 		elif new_tumor_cells < 0 :														 # if we need to remove tumor cells :
 
-			if len(self.possible_locations_del) + new_tumor_cells < 20 :
+			if (len(self.possible_locations_del) + new_tumor_cells < 20) or (simul_time - self.last_possible_locations_update > 50) :
+
+				self.last_possible_locations_update = simul_time
 
 				self.possible_locations_del = []
 
