@@ -39,6 +39,7 @@ class fenetre2:
 			
 		def createCanvas():
 			
+
 			h = pn
 			t = pt
 			i = pi
@@ -61,6 +62,7 @@ class fenetre2:
 			a.plot(time_list,h_list,'r-',label='N')
 			a.plot(time_list,t_list,'b-',label='T')
 			a.plot(time_list,i_list,'g-',label='I')
+
 			a.legend(('cellules saines', 'cellules tumorales','cellules immunitaires'),'best')
 			c.show()
 		
