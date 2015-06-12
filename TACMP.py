@@ -35,14 +35,14 @@ class Woman :
 
 	def __init__ (self) :
 
-		self.alive = True                          # becomes False and stops the program if woman dies from cancer (too many tumor cells in one organ)
-		self.healthy = False  						# becomes True if all tumor cells are removed
+		self.alive = True                          # becomes False and stops the program if woman dies from cancer (too many tumor cells)
+		self.healthy = False  					   # becomes True if all tumor cells are removed
 		self.body = {'Breast' : Organ('Breast',67,parameters.default_parameters), 'Liver' : Organ('Liver',67,parameters.default_parameters), 'Lung' : Organ('Lung',67,parameters.default_parameters), 'Skin' : Organ('Skin',67,parameters.default_parameters)}      # dictionary of organs
 
 		# -__-__-__-__-   Probabilities of tumor apparition / metastasis departure (from the concerned site) / metastasis arrival   -__-__-__-__- #
-		self.tumor_probs = {'Breast' : 0.3, 'Liver' : 0.15, 'Lung' : 0.45, 'Skin' : 0.1}
-		self.mts_appear_probs = {'Breast' : 0.0008, 'Liver' : 0.0001, 'Lung' : 0.00035, 'Skin' : 0.0015}
-		self.mts_transfer_probs = {'Breast_Breast' : 0.05, 'Breast_Liver' : 0.6, 'Breast_Lung' : 0.3, 'Breast_Skin' : 0.05, 'Liver_Breast' : 0.05, 'Liver_Liver' : 0.4, 'Liver_Lung' : 0.45, 'Liver_Skin' : 0.1, 'Lung_Breast' : 0.1, 'Lung_Liver' : 0.5, 'Lung_Lung' : 0.25, 'Lung_Skin' : 0.15, 'Skin_Breast' : 0.05, 'Skin_Liver' : 0.4, 'Skin_Lung' : 0.35, 'Skin_Skin' : 0.2}
+		self.tumor_probs = parameters.tumor_probs
+		self.mts_appear_probs = parameters.mts_appear_probs
+		self.mts_transfer_probs = parameters.mts_transfer_probs
 
 		self.initiate_tumor()						# creating primary tumor
 
@@ -84,7 +84,7 @@ class Woman :
 	def primary_tumor(self):
 		pTumor=self.body['Breast']
 		for org in (self.body).values() :
-				if org.status['T']>pTumor.status['T']:
+				if org.status['T'] > pTumor.status['T']:
 					pTumor=org
 		return pTumor
 		
@@ -93,8 +93,17 @@ class Woman :
 		Tumor=0
 		for org in (self.body).values():
 			Tumor+=org.status['T']
-		if Tumor<0.002: #Je ne sais pas quel seuil mettre
-			self.healthy=True
+		if Tumor < 0.002 :
+			self.healthy = True
+
+	#-__-__-__-__- Methode qui verifie si la patiente est morte -__-__-__-__-
+	def isAlive(self):
+		Tumor=0
+		for org in (self.body).values():
+			Tumor+=org.status['T']
+		if Tumor > 0.5 :
+			self.alive = False
+
 
 	# -__-__-__-__-__-__-__-__-__-__-__-__-__-__-__-__-__-__-__-__-__-__-__-__-__-__-__-__-__-__-__-__-__-__-__-__-__-__-__-__-__-__-__-__-__-__- #
 	#												Main function, acting as a near-infinite loop											  	  #
@@ -113,12 +122,12 @@ class Woman :
 				self.generate_metastasis(simul_time)
 				for org in (self.body).values() :
 					if org.status['T'] != 0:
-						if org.status['H']<0.7 or org.status['I']<0.1:											# if there's too many tumor cells, we consider that the woman just died, thus the simulation ends
-							self.alive = False
-							if org.status['H']<0.7:
-								s = "".join(["La patiente est morte au bout de ",str(simul_time/10)," jours\n d'un cancer généralisé."])
-							elif org.status['I'] < 0.1:
-								s = "".join(["La patiente est morte au bout de ",str(simul_time/10)," jours\n d'une maladie opportuniste\n (Système immunitaire trop faible)."])
+						self.isAlive()
+						if self.alive == False :											# if there's too many tumor cells, we consider that the woman just died, thus the simulation ends
+							#if org.status['H']<0.7:
+							s = "".join(["La patiente est morte au bout de ",str(simul_time/10)," jours\n d'un cancer généralisé."])
+							#elif org.status['I'] < 0.1:
+							#	s = "".join(["La patiente est morte au bout de ",str(simul_time/10)," jours\n d'une maladie opportuniste\n (Système immunitaire trop faible)."])
 							self.I.death_message(s)
 							print s
 							print org.status
@@ -168,7 +177,7 @@ class Woman :
 
 			if org.status['T'] != 0 :									# a metastasis can only come from an affected organ
 
-				here_it_comes = random.random() * (1-1.5*org.status['T'])
+				here_it_comes = random.random()
 
 				if here_it_comes < self.mts_appear_probs[name] :
 
@@ -205,10 +214,6 @@ class Organ :
 		
 		for j in xrange(0,self.size**2,1) :
 			(self.cells).append('H')										# at first, all cells are halthy
-
-		# alternative way using a list of lists
-		#for j in xrange(0,self.size,1) :
-			#(self.cells).append(['H' for k in xrange (0,self.size,1)])     # at first, all cells are healthy
 
 		self.status = {'H' : 1, 'T' : 0, 'I' : 0.1	, 'U' : 0}       # status of the organ at any given simul_time (with proportion (0<p<1) of each type of cell)
 
@@ -251,7 +256,9 @@ class Organ :
 		self.status['T'] += metastasis_count
 		self.status['H'] -= metastasis_count
 
-		self.cells[int(self.size**2 * (0.1+4*random.random()/5))] = 'T'
+		metastasis_location = int(self.size**2 * (0.1+4*random.random()/5))
+		self.cells[metastasis_location] = 'T'
+		self.cells_switched.append(metastasis_location)
 
 
 		# unfinished part, about adding the metastasis to the grid
@@ -307,7 +314,7 @@ class Organ :
 
 		if new_tumor_cells > 0 :														  # if we need to add tumor cells :
 
-			if len(self.possible_locations_add) - new_tumor_cells < 10 :						# if there are too few locations avilable
+			if len(self.possible_locations_add) - new_tumor_cells < 20 :						# if there are too few locations avilable
 
 				self.possible_locations_add = []												# we search all possible locations of expansion (i.e. healthy cells close to a tumor cell)
 
@@ -346,7 +353,7 @@ class Organ :
 
 		elif new_tumor_cells < 0 :														 # if we need to remove tumor cells :
 
-			if len(self.possible_locations_del) + new_tumor_cells < 10 :
+			if len(self.possible_locations_del) + new_tumor_cells < 20 :
 
 				self.possible_locations_del = []
 
