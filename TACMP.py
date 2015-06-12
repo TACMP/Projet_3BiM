@@ -1,12 +1,13 @@
 # -*- coding: utf-8 -*
 
-
 import Tkinter
 import profile
 import math
 import random
 import time
+
 import interface
+import parameters
 
 #random.seed(255)
 
@@ -23,10 +24,10 @@ import interface
 
 # -__-__-__-__-__-__-__-__-__-_-_-__-__-__-__-__-__-__-__- #
 
-pillis_parameters = {'a1':0.2,'a2':0.3,'a3':0.1,'b1':1,'b2':1,'c1':1,'c2':0.5,'c3':1,'c4':1,'d1':0.2,'d2':1,'r1':1.5,'r2':1,'s':0.33,'alpha':0.3,'rho':0.01,'v':0}
-default_parameters = {'a1':0.2,'a2':0.4,'a3':0.1,'b1':1,'b2':1,'c1':1,'c2':0.4,'c3':1,'c4':1,'d1':0.2,'d2':1,'r1':1.6,'r2':1,'s':0.33,'alpha':0.3,'rho':0.2,'v':0}
+
 
 simul_step = 0.01
+
 simul_time = 0
 
 #          |||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||          #
@@ -38,11 +39,11 @@ class Woman :
 
 		self.alive = True                          # becomes False and stops the program if woman dies from cancer (too many tumor cells in one organ)
 		self.healthy = False  						# becomes True if all tumor cells are removed
-		self.body = {'Breast' : Organ('Breast',67,default_parameters), 'Liver' : Organ('Liver',67,default_parameters), 'Lung' : Organ('Lung',67,default_parameters), 'Skin' : Organ('Skin',67,default_parameters)}      # dictionary of organs
+		self.body = {'Breast' : Organ('Breast',67,parameters.default_parameters), 'Liver' : Organ('Liver',67,parameters.default_parameters), 'Lung' : Organ('Lung',67,parameters.default_parameters), 'Skin' : Organ('Skin',67,parameters.default_parameters)}      # dictionary of organs
 
 		# -__-__-__-__-   Probabilities of tumor apparition / metastasis departure (from the concerned site) / metastasis arrival   -__-__-__-__- #
 		self.tumor_probs = {'Breast' : 0.3, 'Liver' : 0.15, 'Lung' : 0.45, 'Skin' : 0.1}
-		self.mts_appear_probs = {'Breast' : 0.001, 'Liver' : 0.0001, 'Lung' : 0.0004, 'Skin' : 0.002}
+		self.mts_appear_probs = {'Breast' : 0.0008, 'Liver' : 0.0001, 'Lung' : 0.00035, 'Skin' : 0.0015}
 		self.mts_transfer_probs = {'Breast_Breast' : 0.05, 'Breast_Liver' : 0.6, 'Breast_Lung' : 0.3, 'Breast_Skin' : 0.05, 'Liver_Breast' : 0.05, 'Liver_Liver' : 0.4, 'Liver_Lung' : 0.45, 'Liver_Skin' : 0.1, 'Lung_Breast' : 0.1, 'Lung_Liver' : 0.5, 'Lung_Lung' : 0.25, 'Lung_Skin' : 0.15, 'Skin_Breast' : 0.05, 'Skin_Liver' : 0.4, 'Skin_Lung' : 0.35, 'Skin_Skin' : 0.2}
 
 		self.initiate_tumor()						# creating primary tumor
@@ -51,7 +52,7 @@ class Woman :
 	
 
 		for org in (self.body).values() :
-			self.I.draw_organ(org.name,org.cells,org)
+			self.I.draw_organ(org)
 			
 
 	# -__-__-__-__-   Only called by __init__, this method chooses the first affected organ, and then calls a method to effectively create the initial tumor   -__-__-__-__- #
@@ -124,25 +125,24 @@ class Woman :
 							print s
 							print org.status
 						else :																# else we update her status, according to the model (one iteration)
-							org.rK4(org.status['H'], org.status['T'], org.status['I'], org.status['U'], org.fh, org.ft, org.fi, org.fu, simul_step)
-						org.update_layout(simul_time)	
-						#if org.name=='Lung':
-							#self.I.run(org)											# we then update the layout (the grid drawn in the window) according to the values predicted by the equations
+							org.rK4(org.status['H'], org.status['T'], org.status['I'], org.status['U'], org.fh, org.ft, org.fi, org.fu, parameters.simul_step)
+						org.update_layout(simul_time)											# we then update the layout (the grid drawn in the window) according to the values predicted by the equations
 						self.I.run(org)
-						self.I.draw_organ(org.name,org.cells,org)
+						self.I.draw_organ(org)
 						
 						org.parameters['v'] = self.I.update_treatment()
 
 				simul_time += 1
-				
-				if self.I.buttonSurgery==True:
-					result=self.primary_tumor()
-					self.I.surgery(result)
-				
+
 				self.isHealthy()
 				if simul_time%50==0 :
 					print simul_time
-				#time.sleep(0.5)
+				#time.sleep(0.1)
+				
+				"""
+				if self.I.buttonSurgery==True:
+					result=self.primary_tumor()
+					self.I.surgery(result)
 				
 				if self.I.TraceCourbeLung == True :
 					self.I.fonction(self.body['Lung'].status['H'],self.body['Lung'].status['T'],self.body['Lung'].status['I'],org.parameters['v'])
@@ -155,7 +155,7 @@ class Woman :
 				
 				if self.I.TraceCourbeLiver == True :
 					self.I.fonction(self.body['Liver'].status['H'],self.body['Liver'].status['T'],self.body['Liver'].status['I'],org.parameters['v'])
-
+				"""
 
 	# -__-__-__-__-__-__-__-__-__-__-__-__-__-__-__-__-__-__-__-__-__-__-__-__-__-__-__-__-__-__-__-__-__-__-__-__-__-__-__-__-__-__-__-__-__-__- #
 	#																																		  	  #
@@ -457,9 +457,9 @@ class Organ :
 	# 		dh = self.parameters['r2'] * h * (1-self.parameters['b2']*h)  -  self.parameters['c4']*t*h
 	# 		dt = self.parameters['r1'] * t * (1-self.parameters['b1']*t)  -  self.parameters['c2']*i*t - self.parameters['c3']*t*h
 	# 		di = self.parameters['s'] + self.parameters['rho'] * (i*t)/float(self.parameters['alpha']+t) - self.parameters['c1']*i*t - self.parameters['d1']*i
-	# 		h += simul_step * dh
-	# 		t += simul_step * dt
-	# 		i += simul_step * di
+	# 		h += parameters.simul_step * dh
+	# 		t += parameters.simul_step * dt
+	# 		i += parameters.simul_step * di
 	# 		print h,t,i
 	# ------------------------------------------------------------------------------------------------------------------- #
 

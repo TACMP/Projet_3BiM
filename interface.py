@@ -3,10 +3,11 @@
 from Tkinter import*
 import math
 import time
-import intTest
 import pylab      
 import random
 import os
+
+import intTest
 
 
 
@@ -23,13 +24,6 @@ class frame:
 	def __init__(self):
 		self.fenetre = Tk()
 		self.fenetre.geometry("1400x1400")
-		
-		"""
-		self.sickWoman = TACMP.Woman()
-		print Poor_girl
-		self.sickWoman.simul_RK()
-		print Poor_girl
-		"""
 
 		self.cells_memorize = []
 		for i in xrange(4) :
@@ -68,7 +62,30 @@ class frame:
 		
 		pHaut = PanedWindow(self.fenetre,orient=HORIZONTAL,height=750,width=800)
 		pDroite = PanedWindow(self.fenetre,orient=VERTICAL,height=750,width=400)
+		pDroite1= PanedWindow(pDroite, orient=VERTICAL,height=245,width=400)
+		pDroite2= PanedWindow(pDroite, orient=HORIZONTAL,height=245,width=400)
+		pDroite3= PanedWindow(pDroite, orient=VERTICAL,height=245,width=400)
+		
+		pDroite.add(pDroite1)
+		pDroite.add(pDroite2)
+		pDroite.add(pDroite3)
+		
+		boutonLung= Button(self.fenetre, text="Tracer courbes Poumon", command=self.TracerCourbeLung, height=3)
 
+		
+		boutonBreast= Button(self.fenetre, text="Tracer courbes Sein", command=self.TracerCourbeBreast, height=4)
+		
+		boutonLiver= Button(self.fenetre, text="Tracer courbes Foie", command=self.TracerCourbeLiver, height=3)
+
+		boutonSkin= Button(self.fenetre, text="Tracer courbes Peau", command=self.TracerCourbeSkin, height=4)
+
+		boutonReset = Button(self.fenetre, text="RESET", command=self.Reset)
+
+		pDroite1.add(boutonLung)
+		pDroite1.add(boutonBreast)
+		pDroite1.add(boutonLiver)
+		pDroite1.add(boutonSkin)	
+		
 		pHaut1 = PanedWindow(pHaut, orient=VERTICAL)
 		pHaut2 = PanedWindow(pHaut, orient=VERTICAL)
 		
@@ -82,21 +99,21 @@ class frame:
 		self.Canvas4= Canvas(self.fenetre, width=350, height=350,bg='white') 
 		self.Canvas4.create_rectangle(1,1,349,349) 
 		
-		txt=StringVar()
-		txt.set("Poumon")
-		self.Poumon = Label(self.fenetre, textvariable=txt)
+		self.txt=StringVar()
+		self.txt.set("Poumon")
+		self.Poumon = Label(self.fenetre, textvariable=self.txt)
 		
-		txt2=StringVar()
-		txt2.set("Sein")
-		self.Sein = Label(self.fenetre, textvariable=txt2)
+		self.txt2=StringVar()
+		self.txt2.set("Sein")
+		self.Sein = Label(self.fenetre, textvariable=self.txt2)
 		
-		txt3=StringVar()
-		txt3.set("Foie")
-		self.Foie = Label(self.fenetre, textvariable=txt3)
+		self.txt3=StringVar()
+		self.txt3.set("Foie")
+		self.Foie = Label(self.fenetre, textvariable=self.txt3)
 		
-		txt4=StringVar()
-		txt4.set("Peau")
-		self.Peau = Label(self.fenetre, textvariable=txt4)
+		self.txt4=StringVar()
+		self.txt4.set("Peau")
+		self.Peau = Label(self.fenetre, textvariable=self.txt4)
 		
 		pHaut1.add(self.Poumon)
 
@@ -137,6 +154,8 @@ class frame:
 		panneau1.add(pHaut)
 		panneau1.add(pDroite)
 		
+		
+		
 		panneau1.pack()
 		
 		
@@ -169,31 +188,16 @@ class frame:
 		pBas1.add(pBas11)
 		pBas1.add(pBas12)
 
-		boutonLung= Button(self.fenetre, text="Tracer courbes Poumon", command=self.TracerCourbeLung)
-		boutonLung.pack()
 		
-		boutonBreast= Button(self.fenetre, text="Tracer    courbes    Sein", command=self.TracerCourbeBreast)
-		boutonBreast.pack()
-		
-		boutonLiver= Button(self.fenetre, text="Tracer courbes Foie", command=self.TracerCourbeLiver)
-		boutonLiver.pack()
-		
-		boutonSkin= Button(self.fenetre, text="Tracer courbes Peau", command=self.TracerCourbeSkin)
-		boutonSkin.pack()
 
-		boutonReset = Button(self.fenetre, text="RESET", command=self.Reset)
-
-		pBas11.add(boutonBreast)
-		pBas11.add(boutonLiver)
-		pBas12.add(boutonLung)
-		pBas12.add(boutonSkin)
-		pBas12.add(boutonReset)
+		
 		
 		#Bouton pour intervention chirurgicale
 		self.buttonSurgery=False
-		bSurgery=Button(self.fenetre,text="Intervention chirurgicale",command=self.setSurgery, height=3, width=3)
-		bSurgery.pack()
-		pBas2.add(bSurgery)
+		bSurgery=Button(self.fenetre,text="Intervention \n chirurgicale",command=self.setSurgery, height=1, width=28)
+		#bSurgery.pack()
+		pDroite2.add(bSurgery)
+		pDroite2.add(boutonReset)
 		
 		self.fileLung = open("StockageDonneesLung.txt","w+")
 		self.fileLiver = open("StockageDonneesLiver.txt","w+")
@@ -207,30 +211,31 @@ class frame:
 
 		self.var_caseLung = IntVar()
 		self.var_caseLung.set(1)
-		caseLung = Checkbutton(self.fenetre, text="Enregistrer les données du poumon", variable=self.var_caseLung)
-		caseLung.pack()
+		caseLung = Checkbutton(self.fenetre, text="Enregistrer les données du poumon", variable=self.var_caseLung, height=4)
+		#caseLung.pack()
 		#print "",var_caseLung.get()
 		
 		
 		self.var_caseSkin= IntVar()
 		self.var_caseSkin.set(1)
-		caseSkin = Checkbutton(self.fenetre, text="Enregistrer les données de la peau", variable=self.var_caseSkin)
-		caseSkin.pack()
+		caseSkin = Checkbutton(self.fenetre, text="Enregistrer les données de la peau", variable=self.var_caseSkin, height=4)
+
 
 		self.var_caseLiver = IntVar()
 		self.var_caseLiver.set(1)
-		caseLiver = Checkbutton(self.fenetre, text="Enregistrer les données du foie", variable=self.var_caseLiver)
-		caseLiver.pack()
+		caseLiver = Checkbutton(self.fenetre, text="Enregistrer les données du foie", variable=self.var_caseLiver, height=4)
+
 		
 		self.var_caseBreast = IntVar()
 		self.var_caseBreast.set(1)
-		caseBreast = Checkbutton(self.fenetre, text="Enregistrer les données du sein", variable=self.var_caseBreast)
-		caseBreast.pack()
 
-		pBas2.add(caseLung)
-		pBas2.add(caseSkin)
-		pBas2.add(caseLiver)
-		pBas2.add(caseBreast)
+		caseBreast = Checkbutton(self.fenetre, text="Enregistrer les données du sein", variable=self.var_caseBreast, height=4)
+
+
+		pDroite3.add(caseLung)
+		pDroite3.add(caseSkin)
+		pDroite3.add(caseLiver)
+		pDroite3.add(caseBreast)
 		
 
 		
@@ -315,56 +320,68 @@ class frame:
 		self.TraceCourbeBreast =False
 		self.TraceCourbeSkin =False
 		self.TraceCourbeLiver =False
-		print "coucou"
+
 			
-	def draw_organ(self,name,org,orgEntier):
+	def draw_organ(self,org):
 		
 		cs = 5
-		if name=='Lung':
+		if org.name=='Lung':
 			
-			for i in xrange(len(org)):
-				x=i%int(math.sqrt(len(org)))
-				y=i/int(math.sqrt(len(org)))
-				if org[i] != self.cells_memorize[0][i] :	
-					if org[i]=='H':
+			for i in xrange(len(org.cells)):
+				x=i%int(math.sqrt(len(org.cells)))
+				y=i/int(math.sqrt(len(org.cells)))
+				if org.cells[i] != self.cells_memorize[0][i] :	
+					if org.cells[i]=='H':
 						self.Canvas1.create_oval(cs*x+10,cs*y+10,cs*x+11,cs*y+11,outline='green')
-					elif org[i]=='T':
+					elif org.cells[i]=='T':
 						self.Canvas1.create_oval(cs*x+10,cs*y+10,cs*x+11,cs*y+11,outline='red')
-			self.cells_memorize[0] = list(org)
+			self.cells_memorize[0] = list(org.cells)
 
-		elif name=='Liver':
-			for i in xrange(len(org)):
-				x=i%int(math.sqrt(len(org)))
-				y=i/int(math.sqrt(len(org)))
-				if org[i] != self.cells_memorize[1][i] :	
-					if org[i]=='H':
+			self.txt.set(" ".join(["Poumon \t Immun. : ",str("%.3f" % org.status['I'])]))
+
+
+		elif org.name=='Liver':
+			for i in xrange(len(org.cells)):
+				x=i%int(math.sqrt(len(org.cells)))
+				y=i/int(math.sqrt(len(org.cells)))
+				if org.cells[i] != self.cells_memorize[1][i] :	
+					if org.cells[i]=='H':
 						self.Canvas2.create_oval(cs*x+10,cs*y+10,cs*x+11,cs*y+11,outline='green')
-					elif org[i]=='T':
+					elif org.cells[i]=='T':
 						self.Canvas2.create_oval(cs*x+10,cs*y+10,cs*x+11,cs*y+11,outline='red')			
-			self.cells_memorize[1] = list(org)
+			self.cells_memorize[1] = list(org.cells)
 
-		elif name=='Breast':
+			self.txt3.set(" ".join(["Foie \t Immun. : ",str("%.3f" % org.status['I'])]))
+
+
+		elif org.name=='Breast':
 			
-			for i in xrange(len(org)):
-				x=i%int(math.sqrt(len(org)))
-				y=i/int(math.sqrt(len(org)))
-				if org[i] != self.cells_memorize[2][i] :	
-					if org[i]=='H':
+			for i in xrange(len(org.cells)):
+				x=i%int(math.sqrt(len(org.cells)))
+				y=i/int(math.sqrt(len(org.cells)))
+				if org.cells[i] != self.cells_memorize[2][i] :	
+					if org.cells[i]=='H':
 						self.Canvas3.create_oval(cs*x+10,cs*y+10,cs*x+11,cs*y+11,outline='green')
-					elif org[i]=='T':
+					elif org.cells[i]=='T':
 						self.Canvas3.create_oval(cs*x+10,cs*y+10,cs*x+11,cs*y+11,outline='red')
-			self.cells_memorize[2] = list(org)
+			self.cells_memorize[2] = list(org.cells)
 
-		elif name=='Skin':
-			for i in xrange(len(org)):
-				x=i%int(math.sqrt(len(org)))
-				y=i/int(math.sqrt(len(org)))
-				if org[i] != self.cells_memorize[3][i] :	
-					if org[i]=='H':
+			self.txt2.set(" ".join(["Sein \t Immun. : ",str("%.3f" % org.status['I'])]))
+
+
+		elif org.name=='Skin':
+			for i in xrange(len(org.cells)):
+				x=i%int(math.sqrt(len(org.cells)))
+				y=i/int(math.sqrt(len(org.cells)))
+				if org.cells[i] != self.cells_memorize[3][i] :	
+					if org.cells[i]=='H':
 						self.Canvas4.create_oval(cs*x+10,cs*y+10,cs*x+11,cs*y+11,outline='green')
-					elif org[i]=='T':
+					elif org.cells[i]=='T':
 						self.Canvas4.create_oval(cs*x+10,cs*y+10,cs*x+11,cs*y+11,outline='red')
-			self.cells_memorize[3] = list(org)
+			self.cells_memorize[3] = list(org.cells)
+
+			self.txt4.set(" ".join(["Peau \t Immun. : ",str("%.3f" % org.status['I'])]))
+
 
 		# prise en compte actions utilisateur
 		self.fenetre.update_idletasks()
