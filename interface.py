@@ -25,11 +25,13 @@ class frame:
 		self.fenetre = Tk()
 		self.fenetre.geometry("1400x1400")
 
+		"""
 		self.cells_memorize = []
 		for i in xrange(4) :
 			self.cells_memorize.append([])
 			for j in xrange(10000) :
 				self.cells_memorize[i].append('x')
+		"""
 
 		self.txt=StringVar()
 		self.txt.set("Projet TACMP!")
@@ -160,7 +162,7 @@ class frame:
 		
 		
 		
-		self.Slider = Scale(self.fenetre, from_ = 0, to = 20, resolution = 0.1)
+		self.Slider = Scale(self.fenetre, from_ = 0, to = 10, resolution = 0.1)
 		self.Slider.pack()
 		pHaut.add(self.Slider)
 		
@@ -282,12 +284,60 @@ class frame:
 		self.TraceCourbeSkin =False
 		self.TraceCourbeLiver =False
 
+
+	def draw_organ_init(self,org) :
+
+		cs = 5
+		if org.name=='Lung':
+			for i in xrange(len(org.cells)):
+				x=i%int(math.sqrt(len(org.cells)))
+				y=i/int(math.sqrt(len(org.cells)))
+				if org.cells[i]=='H':
+					self.Canvas1.create_oval(cs*x+10,cs*y+10,cs*x+11,cs*y+11,outline='green')
+				elif org.cells[i]=='T':
+					self.Canvas1.create_oval(cs*x+10,cs*y+10,cs*x+11,cs*y+11,outline='red')
+
+		elif org.name=='Liver':
+			for i in xrange(len(org.cells)):
+				x=i%int(math.sqrt(len(org.cells)))
+				y=i/int(math.sqrt(len(org.cells)))
+				if org.cells[i]=='H':
+					self.Canvas2.create_oval(cs*x+10,cs*y+10,cs*x+11,cs*y+11,outline='green')
+				elif org.cells[i]=='T':
+					self.Canvas2.create_oval(cs*x+10,cs*y+10,cs*x+11,cs*y+11,outline='red')			
+
+		elif org.name=='Breast':
+			for i in xrange(len(org.cells)):
+				x=i%int(math.sqrt(len(org.cells)))
+				y=i/int(math.sqrt(len(org.cells)))
+				if org.cells[i]=='H':
+					self.Canvas3.create_oval(cs*x+10,cs*y+10,cs*x+11,cs*y+11,outline='green')
+				elif org.cells[i]=='T':
+					self.Canvas3.create_oval(cs*x+10,cs*y+10,cs*x+11,cs*y+11,outline='red')
 			
-	def draw_organ(self,org):
+		elif org.name=='Skin':
+			for i in xrange(len(org.cells)):
+				x=i%int(math.sqrt(len(org.cells)))
+				y=i/int(math.sqrt(len(org.cells)))
+				if org.cells[i]=='H':
+					self.Canvas4.create_oval(cs*x+10,cs*y+10,cs*x+11,cs*y+11,outline='green')
+				elif org.cells[i]=='T':
+					self.Canvas4.create_oval(cs*x+10,cs*y+10,cs*x+11,cs*y+11,outline='red')
+
+			
+	def draw_organ(self,org) :
 		
 		cs = 5
 		if org.name=='Lung':
-			
+			for i in org.cells_switched :
+				x=i%int(math.sqrt(len(org.cells)))
+				y=i/int(math.sqrt(len(org.cells)))
+				if org.cells[i]=='H':
+						self.Canvas1.create_oval(cs*x+10,cs*y+10,cs*x+11,cs*y+11,outline='green')
+				elif org.cells[i]=='T':
+						self.Canvas1.create_oval(cs*x+10,cs*y+10,cs*x+11,cs*y+11,outline='red')
+
+			"""
 			for i in xrange(len(org.cells)):
 				x=i%int(math.sqrt(len(org.cells)))
 				y=i/int(math.sqrt(len(org.cells)))
@@ -297,11 +347,21 @@ class frame:
 					elif org.cells[i]=='T':
 						self.Canvas1.create_oval(cs*x+10,cs*y+10,cs*x+11,cs*y+11,outline='red')
 			self.cells_memorize[0] = list(org.cells)
+			"""
 
-			self.txt.set(" ".join(["Poumon \t Immun. : ",str("%.3f" % org.status['I'])]))
+			self.txt.set(" ".join(["Poumon \t Immun. : ",str("%.3f" % org.status['I']), "\t Medic : ",str("%.3f" % org.status['U'])]))
 
 
 		elif org.name=='Liver':
+			for i in org.cells_switched :
+				x=i%int(math.sqrt(len(org.cells)))
+				y=i/int(math.sqrt(len(org.cells)))
+				if org.cells[i]=='H':
+						self.Canvas2.create_oval(cs*x+10,cs*y+10,cs*x+11,cs*y+11,outline='green')
+				elif org.cells[i]=='T':
+						self.Canvas2.create_oval(cs*x+10,cs*y+10,cs*x+11,cs*y+11,outline='red')
+
+			"""
 			for i in xrange(len(org.cells)):
 				x=i%int(math.sqrt(len(org.cells)))
 				y=i/int(math.sqrt(len(org.cells)))
@@ -311,12 +371,21 @@ class frame:
 					elif org.cells[i]=='T':
 						self.Canvas2.create_oval(cs*x+10,cs*y+10,cs*x+11,cs*y+11,outline='red')			
 			self.cells_memorize[1] = list(org.cells)
+			"""
 
-			self.txt3.set(" ".join(["Foie \t Immun. : ",str("%.3f" % org.status['I'])]))
+			self.txt3.set(" ".join(["Foie \t Immun. : ",str("%.3f" % org.status['I']), "\t Medic : ",str("%.3f" % org.status['U'])]))
 
 
 		elif org.name=='Breast':
-			
+			for i in org.cells_switched :
+				x=i%int(math.sqrt(len(org.cells)))
+				y=i/int(math.sqrt(len(org.cells)))
+				if org.cells[i]=='H':
+						self.Canvas3.create_oval(cs*x+10,cs*y+10,cs*x+11,cs*y+11,outline='green')
+				elif org.cells[i]=='T':
+						self.Canvas3.create_oval(cs*x+10,cs*y+10,cs*x+11,cs*y+11,outline='red')
+
+			"""	
 			for i in xrange(len(org.cells)):
 				x=i%int(math.sqrt(len(org.cells)))
 				y=i/int(math.sqrt(len(org.cells)))
@@ -326,11 +395,21 @@ class frame:
 					elif org.cells[i]=='T':
 						self.Canvas3.create_oval(cs*x+10,cs*y+10,cs*x+11,cs*y+11,outline='red')
 			self.cells_memorize[2] = list(org.cells)
+			"""
 
-			self.txt2.set(" ".join(["Sein \t Immun. : ",str("%.3f" % org.status['I'])]))
-
+			self.txt2.set(" ".join(["Sein \t Immun. : ",str("%.3f" % org.status['I']), "\t Medic : ",str("%.3f" % org.status['U'])]))
+			
 
 		elif org.name=='Skin':
+			for i in org.cells_switched :
+				x=i%int(math.sqrt(len(org.cells)))
+				y=i/int(math.sqrt(len(org.cells)))
+				if org.cells[i]=='H':
+						self.Canvas4.create_oval(cs*x+10,cs*y+10,cs*x+11,cs*y+11,outline='green')
+				elif org.cells[i]=='T':
+						self.Canvas4.create_oval(cs*x+10,cs*y+10,cs*x+11,cs*y+11,outline='red')
+
+			"""
 			for i in xrange(len(org.cells)):
 				x=i%int(math.sqrt(len(org.cells)))
 				y=i/int(math.sqrt(len(org.cells)))
@@ -340,8 +419,9 @@ class frame:
 					elif org.cells[i]=='T':
 						self.Canvas4.create_oval(cs*x+10,cs*y+10,cs*x+11,cs*y+11,outline='red')
 			self.cells_memorize[3] = list(org.cells)
+			"""
 
-			self.txt4.set(" ".join(["Peau \t Immun. : ",str("%.3f" % org.status['I'])]))
+			self.txt4.set(" ".join(["Peau \t Immun. : ",str("%.3f" % org.status['I']), "\t Medic : ",str("%.3f" % org.status['U'])]))
 
 
 		# prise en compte actions utilisateur

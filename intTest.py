@@ -15,6 +15,7 @@ class fenetre2:
 		self.fen=Tk()
 		self.fen.geometry("600x600")
 		self.fen.wm_title("Prédictions du modele")
+		print "lala"
 		#e=Entry(self.fen)
 		#e.pack()
 		#v=e.get()

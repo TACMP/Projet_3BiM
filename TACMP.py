@@ -27,6 +27,7 @@ import parameters
 
 simul_time = 0
 
+
 #          |||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||          #
 
 
@@ -49,7 +50,7 @@ class Woman :
 	
 
 		for org in (self.body).values() :
-			self.I.draw_organ(org)
+			self.I.draw_organ_init(org)
 			
 
 	# -__-__-__-__-   Only called by __init__, this method chooses the first affected organ, and then calls a method to effectively create the initial tumor   -__-__-__-__- #
@@ -134,25 +135,25 @@ class Woman :
 				self.isHealthy()
 				if simul_time%50==0 :
 					print simul_time
-				#time.sleep(0.1)
+				#time.sleep(0.01)
 				
-				"""
+				
 				if self.I.buttonSurgery==True:
 					result=self.primary_tumor()
 					self.I.surgery(result)
 				
 				if self.I.TraceCourbeLung == True :
-					self.I.fonction(self.body['Lung'].status['H'],self.body['Lung'].status['T'],self.body['Lung'].status['I'],org.parameters['v'])
+					self.I.fonction(self.body['Lung'].status['H'],self.body['Lung'].status['T'],self.body['Lung'].status['I'],self.body['Lung'].status['U'])
 					
 				if self.I.TraceCourbeBreast == True :
-					self.I.fonction(self.body['Breast'].status['H'],self.body['Breast'].status['T'],self.body['Breast'].status['I'],org.parameters['v'])
+					self.I.fonction(self.body['Breast'].status['H'],self.body['Breast'].status['T'],self.body['Breast'].status['I'],self.body['Breast'].status['U'])
 					
 				if self.I.TraceCourbeSkin == True :
-					self.I.fonction(self.body['Skin'].status['H'],self.body['Skin'].status['T'],self.body['Skin'].status['I'],org.parameters['v'])
+					self.I.fonction(self.body['Skin'].status['H'],self.body['Skin'].status['T'],self.body['Skin'].status['I'],self.body['Skin'].status['U'])
 				
 				if self.I.TraceCourbeLiver == True :
-					self.I.fonction(self.body['Liver'].status['H'],self.body['Liver'].status['T'],self.body['Liver'].status['I'],org.parameters['v'])
-				"""
+					self.I.fonction(self.body['Liver'].status['H'],self.body['Liver'].status['T'],self.body['Liver'].status['I'],self.body['Liver'].status['U'])
+				
 
 	# -__-__-__-__-__-__-__-__-__-__-__-__-__-__-__-__-__-__-__-__-__-__-__-__-__-__-__-__-__-__-__-__-__-__-__-__-__-__-__-__-__-__-__-__-__-__- #
 	#																																		  	  #
@@ -209,10 +210,17 @@ class Organ :
 		#for j in xrange(0,self.size,1) :
 			#(self.cells).append(['H' for k in xrange (0,self.size,1)])     # at first, all cells are healthy
 
-		self.status = {'H' : 1, 'T' : 0, 'Q' : 0, 'I' : 0.1	, 'U' : 0}       # status of the organ at any given simul_time (with proportion (0<p<1) of each type of cell)
+		self.status = {'H' : 1, 'T' : 0, 'I' : 0.1	, 'U' : 0}       # status of the organ at any given simul_time (with proportion (0<p<1) of each type of cell)
 
 		# parameters of the model, specific to each organ
 		self.parameters = x_parameters
+
+		# for method "update_layout"
+		self.possible_locations_add = []
+		self.possible_locations_del = []
+
+		# memorizing where tumor cells have (dis)appeared, for faster performances (even though it has quite nothing to do here :/)
+		self.cells_switched = []
 
 
 
@@ -291,83 +299,86 @@ class Organ :
 
 	
 	# -__-__-__-__-   Method updating the grid to reflect the real status of the organ   -__-__-__-__-
-	def update_layout (self, simul_time) :
-	
-	
+	def update_layout (self, simul_time, first_call = False) :
+
+		self.cells_switched = []
+
 		new_tumor_cells = int(self.status['T'] * self.size**2) - (self.cells).count('T')  # evaluating the number of tumor cells to add or remove
 
 		if new_tumor_cells > 0 :														  # if we need to add tumor cells :
 
-			#print new_tumor_cells
+			if len(self.possible_locations_add) - new_tumor_cells < 10 :						# if there are too few locations avilable
 
-			possible_locations = []															# we search all possible locations of expansion (i.e. healthy cells close to a tumor cell)
+				self.possible_locations_add = []												# we search all possible locations of expansion (i.e. healthy cells close to a tumor cell)
 
-			for position in xrange(0,len(self.cells),1) :
+				for position in xrange(0,len(self.cells),1) :
 
-				if self.cells[position] == 'T' :											# meaning that for each tumor cell, we memorize the healthy neighbouring cells, while being sure not to look outside of the grid
+					if self.cells[position] == 'T' :											# meaning that for each tumor cell, we memorize the healthy neighbouring cells, while being sure not to look outside of the grid
 
-					if position % self.size != 0 :											# healthy cells close to several tumor cells are counted several simul_times (which seems legit)
-						if self.cells[position - 1] == 'H' :
-							possible_locations.append(position - 1)
+						if position % self.size != 0 :											# healthy cells close to several tumor cells are counted several simul_times (which seems legit)
+							if self.cells[position - 1] == 'H' :
+								self.possible_locations_add.append(position - 1)
 
-					if (position+1) % self.size != 0 :
-						if self.cells[position + 1] == 'H' :
-							possible_locations.append(position + 1)
+						if (position+1) % self.size != 0 :
+							if self.cells[position + 1] == 'H' :
+								self.possible_locations_add.append(position + 1)
 
-					if position - self.size >= 0 :
-						if self.cells[position - self.size] == 'H' :
-							possible_locations.append(position - self.size)
+						if position - self.size >= 0 :
+							if self.cells[position - self.size] == 'H' :
+								self.possible_locations_add.append(position - self.size)
 
-					if position + self.size < self.size**2 :
-						if self.cells[position + self.size] == 'H' :
-							possible_locations.append(position + self.size)
+						if position + self.size < self.size**2 :
+							if self.cells[position + self.size] == 'H' :
+								self.possible_locations_add.append(position + self.size)
 
-			#print possible_locations													 # un-comment this to check the locations found
+			#print self.possible_locations													 # un-comment this to check the locations found
 
 			for t_cell in xrange(0,new_tumor_cells,1) :									 # we can then add the required tumor cells by choosing randomly among all the possible locations
 
-				if possible_locations != [] :
+				if self.possible_locations_add != [] :
 
-					chosen_location = random.randint(0,len(possible_locations)-1)
-					#print possible_locations[chosen_location]							 # un-comment to get the chosen position
-					self.cells[possible_locations[chosen_location]] = 'T'
-					del possible_locations[chosen_location]
+					chosen_location = random.randint(0,len(self.possible_locations_add)-1)
+					#print self.possible_locations[chosen_location]							 # un-comment to get the chosen position
+					self.cells[self.possible_locations_add[chosen_location]] = 'T'
+					self.cells_switched.append(self.possible_locations_add[chosen_location]) # remembering where a change has been made
+					del self.possible_locations_add[chosen_location]
 
 
 		elif new_tumor_cells < 0 :														 # if we need to remove tumor cells :
 
-			#print new_tumor_cells
+			if len(self.possible_locations_del) + new_tumor_cells < 10 :
 
-			possible_locations = []
+				self.possible_locations_del = []
 
-			for position in xrange(0,len(self.cells),1) :								 # same logic, but we remove a tumor cell on the outside of the tumor (i.e. with at least 1 neighbouring healthy cell)
+				for position in xrange(0,len(self.cells),1) :								 # same logic, but we remove a tumor cell on the outside of the tumor (i.e. with at least 1 neighbouring healthy cell)
 
-				if self.cells[position] == 'T' :											
+					if self.cells[position] == 'T' :											
 
-					if position % self.size != 0 :											
-						if self.cells[position - 1] == 'H' :
-							possible_locations.append(position)
+						if position % self.size != 0 :											
+							if self.cells[position - 1] == 'H' :
+								self.possible_locations_del.append(position)
 
-					if (position+1) % self.size != 0 :
-						if self.cells[position + 1] == 'H' :
-							possible_locations.append(position)
+						if (position+1) % self.size != 0 :
+							if self.cells[position + 1] == 'H' :
+								self.possible_locations_del.append(position)
 
-					if position - self.size >= 0 :
-						if self.cells[position - self.size] == 'H' :
-							possible_locations.append(position)
+						if position - self.size >= 0 :
+							if self.cells[position - self.size] == 'H' :
+								self.possible_locations_del.append(position)
 
-					if position + self.size < self.size**2 :
-						if self.cells[position + self.size] == 'H' :
-							possible_locations.append(position)
+						if position + self.size < self.size**2 :
+							if self.cells[position + self.size] == 'H' :
+								self.possible_locations_del.append(position)
 
 
 			for t_cell in xrange(new_tumor_cells,0,1) :
 
-				if possible_locations != [] :
+				if self.possible_locations_del != [] :
 
-					chosen_location = random.randint(0,len(possible_locations)-1)
-					self.cells[possible_locations[chosen_location]] = 'H'
-					del possible_locations[chosen_location]
+					chosen_location = random.randint(0,len(self.possible_locations_del)-1)
+					self.cells[self.possible_locations_del[chosen_location]] = 'H'
+					self.cells_switched.append(self.possible_locations_del[chosen_location])
+					del self.possible_locations_del[chosen_location]
 
 				else :
 					print simul_time, new_tumor_cells
@@ -468,4 +479,4 @@ class Organ :
 Poor_girl = Woman()
 print Poor_girl
 Poor_girl.simul_RK()
-print Poor_girl
+print "Program ended ! Thus, you shouldn't see that !"
