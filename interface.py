@@ -268,8 +268,9 @@ class frame:
 		print self.fileLiver.readline()
 
 		fichier1=open("commandeGNULung.txt","w") 
-		comm2="plot 'StockageDonneesLung.txt' using 1:2 with lines title 'Evolution du nombre de cellule tumorales' \n" 
-		comm3="replot 'StockageDonneesLung.txt' using 1:3 with lines title 'Evolution du nombre de cellule saines' \n" 
+		comm2="plot 'StockageDonneesLung.txt' using 1:2 with lines title 'Evolution du nombre de cellule tumorales pour le poumon'\n" 
+		comm3="replot 'StockageDonneesLung.txt' using 1:3 with lines title 'Evolution du nombre de cellule saines pour le poumon' \n" 
+		
 		fichier1.write(comm2) 
 		fichier1.write(comm3) 
 		fichier1.close() 
@@ -277,21 +278,21 @@ class frame:
 		
 
 		fichier2=open("commandeGNUBreast.txt","w") 
-		comm2="plot 'StockageDonneesBreast.txt' using 1:2 with lines title 'Evolution du nombre de cellule tumorales' \n" 
+		comm2="plot 'StockageDonneesBreast.txt' using 1:2 with lines title 'Evolution du nombre de cellule tumorales pour le sein' \n" 
 		fichier2.write(comm2) 
 		fichier2.close() 
 		os.system("gnuplot "+"commandeGNUBreast.txt --persist")
 		
 
 		fichier3=open("commandeGNUSkin.txt","w") 
-		comm2="plot 'StockageDonneesSkin.txt' using 1:2 with lines title 'Evolution du nombre de cellule tumorales' \n" 
+		comm2="plot 'StockageDonneesSkin.txt' using 1:2 with lines title 'Evolution du nombre de cellule tumorales pour la peau' \n" 
 		fichier3.write(comm2) 
 		fichier3.close() 
 		os.system("gnuplot "+"commandeGNUSkin.txt --persist")
 		
 
 		fichier4=open("commandeLiver.txt","w") 
-		comm2="plot 'StockageDonneesLiver.txt' using 1:2 with lines title 'Evolution du nombre de cellule tumorales' \n" 
+		comm2="plot 'StockageDonneesLiver.txt' using 1:2 with lines title 'Evolution du nombre de cellule tumorales pour le foie' \n" 
 		fichier4.write(comm2) 
 		fichier4.close() 
 		os.system("gnuplot "+"commandeLiver.txt --persist")
