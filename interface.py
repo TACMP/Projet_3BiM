@@ -25,14 +25,6 @@ class frame:
 		self.fenetre = Tk()
 		self.fenetre.geometry("1400x1400")
 
-		"""
-		self.cells_memorize = []
-		for i in xrange(4) :
-			self.cells_memorize.append([])
-			for j in xrange(10000) :
-				self.cells_memorize[i].append('x')
-		"""
-
 		self.txt=StringVar()
 		self.txt.set("Projet TACMP!")
 		self.champ_label = Label(self.fenetre, textvariable=self.txt)
@@ -277,7 +269,7 @@ class frame:
 
 		fichier1=open("commandeGNULung.txt","w") 
 		comm2="plot 'StockageDonneesLung.txt' using 1:2 with lines title 'Evolution du nombre de cellule tumorales' \n" 
-		#comm3="replot 'StockageDonneesLung.txt' using 1:3 with lines title 'Evolution du nombre de cellule saines' \n" 
+		comm3="replot 'StockageDonneesLung.txt' using 1:3 with lines title 'Evolution du nombre de cellule saines' \n" 
 		fichier1.write(comm2) 
 		fichier1.write(comm3) 
 		fichier1.close() 
