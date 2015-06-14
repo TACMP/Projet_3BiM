@@ -229,6 +229,8 @@ class Organ :
 
 		# memorizing where tumor cells have (dis)appeared, for faster performances (even though it has quite nothing to do here :/)
 		self.cells_switched = []
+		# memorizing where a metastasis have appeared (I know this is also ugly :/)
+		self.new_metastasis = -1
 
 
 
@@ -247,7 +249,6 @@ class Organ :
 			center = int(self.size**2/2)
 
 		self.create_tumor_grid(center, int(self.status['T'] * self.size**2))     # "create_tumor_grid" effectively creates the initial tumor on the grid of cells, for it to appear once the grid is drawn
-		#print self.cells
 
 
 
@@ -261,10 +262,10 @@ class Organ :
 
 		metastasis_location = int(self.size**2 * (0.1+4*random.random()/5))
 		self.cells[metastasis_location] = 'T'
-		self.cells_switched.append(metastasis_location)
+		self.new_metastasis = metastasis_location
 
 
-		# unfinished part, about adding the metastasis to the grid
+		# unfinished optional part, about adding the metastasis to the grid in a more fashioned way
 
 		# x_location = int(random.random() * self.size)
 		# y_location = int(random.random() * self.size)
@@ -309,9 +310,13 @@ class Organ :
 
 	
 	# -__-__-__-__-   Method updating the grid to reflect the real status of the organ   -__-__-__-__-
-	def update_layout (self, simul_time, first_call = False) :
+	def update_layout (self, simul_time) :
 
 		self.cells_switched = []
+
+		if self.new_metastasis != -1 :
+			self.cells_switched.append(self.new_metastasis)
+			self.new_metastasis = -1
 
 		new_tumor_cells = int(self.status['T'] * self.size**2) - (self.cells).count('T')  # evaluating the number of tumor cells to add or remove
 
