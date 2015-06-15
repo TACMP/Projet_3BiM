@@ -269,10 +269,10 @@ class frame:
 
 		fichier1=open("commandeGNULung.txt","w") 
 		comm2="plot 'StockageDonneesLung.txt' using 1:2 with lines title 'Evolution du nombre de cellule tumorales pour le poumon'\n" 
-		comm3="replot 'StockageDonneesLung.txt' using 1:3 with lines title 'Evolution du nombre de cellule saines pour le poumon' \n" 
+		#comm3="replot 'StockageDonneesLung.txt' using 1:3 with lines title 'Evolution du nombre de cellule saines pour le poumon' \n" 
 		
 		fichier1.write(comm2) 
-		fichier1.write(comm3) 
+		#fichier1.write(comm3) 
 		fichier1.close() 
 		os.system("gnuplot "+"commandeGNULung.txt --persist")
 		

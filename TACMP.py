@@ -20,7 +20,7 @@ import parameters
 
 # 'U' : drug level in organ
 
-# 10 iterations of time = 1 day
+# 24 iterations of time = 1 day
 
 # -__-__-__-__-__-__-__-__-__-_-_-__-__-__-__-__-__-__-__- #
 
@@ -117,7 +117,7 @@ class Woman :
 		simul_time = 0
 		while (self.I.see==True):
 			if self.healthy==True and check==0:
-				s = "".join(["Félicitations ! \n La patiente a guéri après ",str(simul_time/10)," jours."])
+				s = "".join(["Félicitations ! \n La patiente a guéri après ",str(simul_time/24)," jours."])
 				print s
 				check=1
 				self.I.death_message(s)
@@ -128,7 +128,7 @@ class Woman :
 						self.isAlive()
 						if self.alive == False :											# if there's too many tumor cells, we consider that the woman just died, thus the simulation ends
 							#if org.status['H']<0.7:
-							s = "".join(["La patiente est morte au bout de ",str(simul_time/10)," jours\n d'un cancer généralisé."])
+							s = "".join(["La patiente est morte au bout de ",str(simul_time/24)," jours\n d'un cancer généralisé."])
 							#elif org.status['I'] < 0.1:
 							#	s = "".join(["La patiente est morte au bout de ",str(simul_time/10)," jours\n d'une maladie opportuniste\n (Système immunitaire trop faible)."])
 							self.I.death_message(s)
