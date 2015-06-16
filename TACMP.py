@@ -20,15 +20,14 @@ import parameters
 
 # 'U' : drug level in organ
 
-# 24 iterations of time = 1 day
+# 48 iterations of time = 1 day
 
 # -__-__-__-__-__-__-__-__-__-_-_-__-__-__-__-__-__-__-__- #
 
 
-
-simul_step = 0.01
-
+simul_step = parameters.simul_step
 simul_time = 0
+day_length = parameters.day_length
 
 
 #          |||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||          #
@@ -40,7 +39,7 @@ class Woman :
 
 		self.alive = True                          # becomes False and stops the program if woman dies from cancer (too many tumor cells)
 		self.healthy = False  					   # becomes True if all tumor cells are removed
-		self.body = {'Breast' : Organ('Breast',67,parameters.default_parameters), 'Liver' : Organ('Liver',67,parameters.default_parameters), 'Lung' : Organ('Lung',67,parameters.default_parameters), 'Skin' : Organ('Skin',67,parameters.default_parameters)}      # dictionary of organs
+		self.body = {'Breast' : Organ('Breast',68,parameters.custom_parameters), 'Liver' : Organ('Liver',68,parameters.custom_parameters), 'Lung' : Organ('Lung',68,parameters.custom_parameters), 'Skin' : Organ('Skin',68,parameters.custom_parameters)}      # dictionary of organs
 
 		# -__-__-__-__-   Probabilities of tumor apparition / metastasis departure (from the concerned site) / metastasis arrival   -__-__-__-__- #
 		self.tumor_probs = parameters.tumor_probs
@@ -84,7 +83,7 @@ class Woman :
 
 
 	#-__-__-__-__- Methode qui renvoie la tumeur primaire (ie l'organe le plus atteint) -__-__-__-__-
-	def primary_tumor(self):
+	def get_primary_tumor(self):
 		pTumor=self.body['Breast']
 		for org in (self.body).values() :
 				if org.status['T'] > pTumor.status['T']:
@@ -102,10 +101,14 @@ class Woman :
 	#-__-__-__-__- Methode qui verifie si la patiente est morte -__-__-__-__-
 	def isAlive(self):
 		Tumor=0
+		affected_organs=0
 		for org in (self.body).values():
 			Tumor+=org.status['T']
-		if Tumor > 0.5 :
+			if org.status['T'] > 0.01 :
+				affected_organs+=1
+		if Tumor > 0.3 + 0.1*affected_organs :
 			self.alive = False
+		return (affected_organs > 1)
 
 
 	# -__-__-__-__-__-__-__-__-__-__-__-__-__-__-__-__-__-__-__-__-__-__-__-__-__-__-__-__-__-__-__-__-__-__-__-__-__-__-__-__-__-__-__-__-__-__- #
@@ -113,45 +116,51 @@ class Woman :
 	# -__-__-__-__-__-__-__-__-__-__-__-__-__-__-__-__-__-__-__-__-__-__-__-__-__-__-__-__-__-__-__-__-__-__-__-__-__-__-__-__-__-__-__-__-__-__- #
 
 	def simul_RK (self) :
+
 		check=0			#Permet de ne plus rentrer dans les if tout en maintenant la fenetre une fois que la patiente est guerie
 		simul_time = 0
-		while (self.I.see==True):
+
+		while (self.I.see==True) :
+
+			self.isHealthy()
+
 			if self.healthy==True and check==0:
-				s = "".join(["Félicitations ! \n La patiente a guéri après ",str(simul_time/24)," jours."])
-				print s
+				s = "".join(["Félicitations ! \n La patiente a guéri après ",str(simul_time/day_length)," jours."])
 				check=1
 				self.I.death_message(s)
-			elif (self.alive == True) and check==0:					# simulation (currently) ends after a long time, or once the woman has died
+
+			elif (self.alive == True) and check==0:					# simulation ends after the woman has died or is cured
+
 				self.generate_metastasis(simul_time)
+
 				for org in (self.body).values() :
-					if org.status['T'] != 0:
-						self.isAlive()
-						if self.alive == False :											# if there's too many tumor cells, we consider that the woman just died, thus the simulation ends
-							#if org.status['H']<0.7:
-							s = "".join(["La patiente est morte au bout de ",str(simul_time/24)," jours\n d'un cancer généralisé."])
-							#elif org.status['I'] < 0.1:
-							#	s = "".join(["La patiente est morte au bout de ",str(simul_time/10)," jours\n d'une maladie opportuniste\n (Système immunitaire trop faible)."])
+
+					if org.status['T'] != 0 :
+
+						widespread = self.isAlive()
+						if self.alive == False :										# if there's too many tumor cells, we consider that the woman just died, thus the simulation ends
+							if widespread == True :
+								s = "".join(["La patiente est morte au bout de ",str(simul_time/day_length)," jours\n d'un cancer généralisé."])
+							else :
+								s = "".join(["La patiente est morte au bout de ",str(simul_time/day_length)," jours\n d'une tumeur trop importante."])
 							self.I.death_message(s)
-							print s
-							print org.status
+
 						else :																# else we update her status, according to the model (one iteration)
 							org.rK4(org.status['H'], org.status['T'], org.status['I'], org.status['U'], org.fh, org.ft, org.fi, org.fu, parameters.simul_step)
 						org.update_layout(simul_time)											# we then update the layout (the grid drawn in the window) according to the values predicted by the equations
-						self.I.run(org)
+						self.I.run(org, simul_time/day_length)
 						self.I.draw_organ(org)
 						
 						org.parameters['v'] = self.I.update_treatment()
 
 				simul_time += 1
 
-				self.isHealthy()
 				if simul_time%50==0 :
 					print simul_time
-				#time.sleep(0.01)
 				
 				
-				if self.I.buttonSurgery==True:
-					result=self.primary_tumor()
+				if self.I.buttonSurgery == True and self.I.surgery_used == False :
+					result = self.get_primary_tumor()
 					self.I.surgery(result)
 				
 				if self.I.TraceCourbeLung == True :
@@ -238,7 +247,7 @@ class Organ :
 	def create_tumor (self) :
 
 		# -__-__- Randomized initial size -__-__-
-		self.status['T'] = 0.002 + random.random()/50 						 # number of initial tumor cells, normalized
+		self.status['T'] = 0.005 + random.random()/60 						 # number of initial tumor cells, normalized
 		self.status['H'] = 1 - self.status['T']
 
 		# print int(self.status['T'] * self.size**2)                         # displays the number of initial tumor cells
@@ -332,7 +341,7 @@ class Organ :
 
 					if self.cells[position] == 'T' :											# meaning that for each tumor cell, we memorize the healthy neighbouring cells, while being sure not to look outside of the grid
 
-						if position % self.size != 0 :											# healthy cells close to several tumor cells are counted several simul_times (which seems legit)
+						if position % self.size != 0 :											# healthy cells close to several tumor cells are counted several times (which seems legit)
 							if self.cells[position - 1] == 'H' :
 								self.possible_locations_add.append(position - 1)
 

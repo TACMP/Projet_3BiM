@@ -22,21 +22,22 @@ from matplotlib.figure import Figure
 class frame:
 
 	def __init__(self):
+
 		self.fenetre = Tk()
+		self.fenetre.title("The Amazing Cancer Modeling Project")
 		self.fenetre.geometry("1400x1400")
 
-		self.txt=StringVar()
-		self.txt.set("Projet TACMP!")
-		self.champ_label = Label(self.fenetre, textvariable=self.txt)
+		self.day = StringVar()
+		self.day.set("Day 0")
+		self.champ_label = Label(self.fenetre, textvariable=self.day)
 
-		
+
 		#Pour afficher le label dans la fenetre
 		#pack permet de positionner la fenetre
 		self.champ_label.pack()
-		
-		
+			
 		#Pour que la fenetre reste ouverte a la fin:
-		self.see=True
+		self.see = True
 		
 		self.TraceCourbeLung =False
 		self.TraceCourbeBreast =False
@@ -44,6 +45,7 @@ class frame:
 		self.TraceCourbeLiver =False
 
 
+		self.surgery_used = False
 		self.reset = False
 		
 		
@@ -64,14 +66,14 @@ class frame:
 		pDroite.add(pDroite2)
 		pDroite.add(pDroite3)
 		
-		boutonLung= Button(self.fenetre, text="Tracer courbes Poumon", command=self.TracerCourbeLung, height=3)
+		boutonLung= Button(self.fenetre, text="Prédictions Poumon", command=self.TracerCourbeLung, height=3)
 
 		
-		boutonBreast= Button(self.fenetre, text="Tracer courbes Sein", command=self.TracerCourbeBreast, height=4)
+		boutonBreast= Button(self.fenetre, text="Prédictions Sein", command=self.TracerCourbeBreast, height=4)
 		
-		boutonLiver= Button(self.fenetre, text="Tracer courbes Foie", command=self.TracerCourbeLiver, height=3)
+		boutonLiver= Button(self.fenetre, text="Prédictions Foie", command=self.TracerCourbeLiver, height=3)
 
-		boutonSkin= Button(self.fenetre, text="Tracer courbes Peau", command=self.TracerCourbeSkin, height=4)
+		boutonSkin= Button(self.fenetre, text="Prédictions Peau", command=self.TracerCourbeSkin, height=4)
 
 		boutonReset = Button(self.fenetre, text="RESET", command=self.Reset)
 
@@ -154,7 +156,7 @@ class frame:
 		
 		
 		
-		self.Slider = Scale(self.fenetre, from_ = 0, to = 10, resolution = 0.1)
+		self.Slider = Scale(self.fenetre, from_ = 0, to = 20, resolution = 0.2)
 		self.Slider.pack()
 		pHaut.add(self.Slider)
 		
@@ -189,7 +191,6 @@ class frame:
 		#Bouton pour intervention chirurgicale
 		self.buttonSurgery=False
 		bSurgery=Button(self.fenetre,text="Intervention \n chirurgicale",command=self.setSurgery, height=1, width=28)
-		#bSurgery.pack()
 		pDroite2.add(bSurgery)
 		pDroite2.add(boutonReset)
 		
@@ -205,25 +206,23 @@ class frame:
 
 		self.var_caseLung = IntVar()
 		self.var_caseLung.set(1)
-		caseLung = Checkbutton(self.fenetre, text="Enregistrer les données du poumon", variable=self.var_caseLung, height=4)
-		#caseLung.pack()
-		#print "",var_caseLung.get()
+		caseLung = Checkbutton(self.fenetre, text="Enregistrement des données du poumon", variable=self.var_caseLung, height=4)
 		
 		
 		self.var_caseSkin= IntVar()
 		self.var_caseSkin.set(1)
-		caseSkin = Checkbutton(self.fenetre, text="Enregistrer les données de la peau", variable=self.var_caseSkin, height=4)
+		caseSkin = Checkbutton(self.fenetre, text="Enregistrement des données de la peau", variable=self.var_caseSkin, height=4)
 
 
 		self.var_caseLiver = IntVar()
 		self.var_caseLiver.set(1)
-		caseLiver = Checkbutton(self.fenetre, text="Enregistrer les données du foie", variable=self.var_caseLiver, height=4)
+		caseLiver = Checkbutton(self.fenetre, text="Enregistrement des données du foie", variable=self.var_caseLiver, height=4)
 
 		
 		self.var_caseBreast = IntVar()
 		self.var_caseBreast.set(1)
 
-		caseBreast = Checkbutton(self.fenetre, text="Enregistrer les données du sein", variable=self.var_caseBreast, height=4)
+		caseBreast = Checkbutton(self.fenetre, text="Enregistrement des données du sein", variable=self.var_caseBreast, height=4)
 
 
 		pDroite3.add(caseLung)
@@ -237,7 +236,8 @@ class frame:
 		self.pBas.pack()
 	
 
-	def run(self,org):
+	def run(self,org,date):
+
 		global  t,dt,nbT,nbH,temps,valT,valH
 
 		t=t+dt
@@ -257,42 +257,41 @@ class frame:
 		elif org.name=="Liver" and self.var_caseLiver.get()==1:
 			self.fileLiver.write(str(t)+ "	" +str(nbT) + "	" +  str(nbH) + "\n")
 
-	def gnuplotFunction(self):
-		print "Je vais dans la fonction gnuplot"
-		
-		print self.fileLung.readline()
+		self.day.set("Day " + str(date))
 
-		print self.fileBreast.readline()
+
+
+	def gnuplotFunction(self):
 		
-		print self.fileSkin.readline()
-		print self.fileLiver.readline()
+		#print self.fileLung.readline()
+		#print self.fileBreast.readline()
+		#print self.fileSkin.readline()
+		#print self.fileLiver.readline()
 
 		fichier1=open("commandeGNULung.txt","w") 
-		comm2="plot 'StockageDonneesLung.txt' using 1:2 with lines title 'Evolution du nombre de cellule tumorales pour le poumon'\n" 
-		#comm3="replot 'StockageDonneesLung.txt' using 1:3 with lines title 'Evolution du nombre de cellule saines pour le poumon' \n" 
+		comm2="plot 'StockageDonneesLung.txt' using 1:2 with lines title 'Evolution du nombre de cellules tumorales pour le poumon'\n" 
 		
 		fichier1.write(comm2) 
-		#fichier1.write(comm3) 
 		fichier1.close() 
 		os.system("gnuplot "+"commandeGNULung.txt --persist")
 		
 
 		fichier2=open("commandeGNUBreast.txt","w") 
-		comm2="plot 'StockageDonneesBreast.txt' using 1:2 with lines title 'Evolution du nombre de cellule tumorales pour le sein' \n" 
+		comm2="plot 'StockageDonneesBreast.txt' using 1:2 with lines title 'Evolution du nombre de cellules tumorales pour le sein' \n" 
 		fichier2.write(comm2) 
 		fichier2.close() 
 		os.system("gnuplot "+"commandeGNUBreast.txt --persist")
 		
 
 		fichier3=open("commandeGNUSkin.txt","w") 
-		comm2="plot 'StockageDonneesSkin.txt' using 1:2 with lines title 'Evolution du nombre de cellule tumorales pour la peau' \n" 
+		comm2="plot 'StockageDonneesSkin.txt' using 1:2 with lines title 'Evolution du nombre de cellules tumorales pour la peau' \n" 
 		fichier3.write(comm2) 
 		fichier3.close() 
 		os.system("gnuplot "+"commandeGNUSkin.txt --persist")
 		
 
 		fichier4=open("commandeLiver.txt","w") 
-		comm2="plot 'StockageDonneesLiver.txt' using 1:2 with lines title 'Evolution du nombre de cellule tumorales pour le foie' \n" 
+		comm2="plot 'StockageDonneesLiver.txt' using 1:2 with lines title 'Evolution du nombre de cellules tumorales pour le foie' \n" 
 		fichier4.write(comm2) 
 		fichier4.close() 
 		os.system("gnuplot "+"commandeLiver.txt --persist")
@@ -320,54 +319,58 @@ class frame:
 	def draw_organ_init(self,org) :
 
 		cs = 5
+		x_gap = 6
+		y_gap = 6
 		if org.name=='Lung':
 			for i in xrange(len(org.cells)):
 				x=i%int(math.sqrt(len(org.cells)))
 				y=i/int(math.sqrt(len(org.cells)))
 				if org.cells[i]=='H':
-					self.Canvas1.create_oval(cs*x+10,cs*y+10,cs*x+11,cs*y+11,outline='green')
+					self.Canvas1.create_oval(cs*x+x_gap,cs*y+y_gap,cs*x+x_gap+1,cs*y+y_gap+1,outline='green')
 				elif org.cells[i]=='T':
-					self.Canvas1.create_oval(cs*x+10,cs*y+10,cs*x+11,cs*y+11,outline='red')
+					self.Canvas1.create_oval(cs*x+x_gap,cs*y+y_gap,cs*x+x_gap+1,cs*y+y_gap+1,outline='red')
 
 		elif org.name=='Liver':
 			for i in xrange(len(org.cells)):
 				x=i%int(math.sqrt(len(org.cells)))
 				y=i/int(math.sqrt(len(org.cells)))
 				if org.cells[i]=='H':
-					self.Canvas2.create_oval(cs*x+10,cs*y+10,cs*x+11,cs*y+11,outline='green')
+					self.Canvas2.create_oval(cs*x+x_gap,cs*y+y_gap,cs*x+x_gap+1,cs*y+y_gap+1,outline='green')
 				elif org.cells[i]=='T':
-					self.Canvas2.create_oval(cs*x+10,cs*y+10,cs*x+11,cs*y+11,outline='red')			
+					self.Canvas2.create_oval(cs*x+x_gap,cs*y+y_gap,cs*x+x_gap+1,cs*y+y_gap+1,outline='red')			
 
 		elif org.name=='Breast':
 			for i in xrange(len(org.cells)):
 				x=i%int(math.sqrt(len(org.cells)))
 				y=i/int(math.sqrt(len(org.cells)))
 				if org.cells[i]=='H':
-					self.Canvas3.create_oval(cs*x+10,cs*y+10,cs*x+11,cs*y+11,outline='green')
+					self.Canvas3.create_oval(cs*x+x_gap,cs*y+y_gap,cs*x+x_gap+1,cs*y+y_gap+1,outline='green')
 				elif org.cells[i]=='T':
-					self.Canvas3.create_oval(cs*x+10,cs*y+10,cs*x+11,cs*y+11,outline='red')
+					self.Canvas3.create_oval(cs*x+x_gap,cs*y+y_gap,cs*x+x_gap+1,cs*y+y_gap+1,outline='red')
 			
 		elif org.name=='Skin':
 			for i in xrange(len(org.cells)):
 				x=i%int(math.sqrt(len(org.cells)))
 				y=i/int(math.sqrt(len(org.cells)))
 				if org.cells[i]=='H':
-					self.Canvas4.create_oval(cs*x+10,cs*y+10,cs*x+11,cs*y+11,outline='green')
+					self.Canvas4.create_oval(cs*x+x_gap,cs*y+y_gap,cs*x+x_gap+1,cs*y+y_gap+1,outline='green')
 				elif org.cells[i]=='T':
-					self.Canvas4.create_oval(cs*x+10,cs*y+10,cs*x+11,cs*y+11,outline='red')
+					self.Canvas4.create_oval(cs*x+x_gap,cs*y+y_gap,cs*x+x_gap+1,cs*y+y_gap+1,outline='red')
 
 			
 	def draw_organ(self,org) :
 		
 		cs = 5
+		x_gap = 6
+		y_gap = 6
 		if org.name=='Lung':
 			for i in org.cells_switched :
 				x=i%int(math.sqrt(len(org.cells)))
 				y=i/int(math.sqrt(len(org.cells)))
 				if org.cells[i]=='H':
-						self.Canvas1.create_oval(cs*x+10,cs*y+10,cs*x+11,cs*y+11,outline='green')
+						self.Canvas1.create_oval(cs*x+x_gap,cs*y+y_gap,cs*x+x_gap+1,cs*y+y_gap+1,outline='green')
 				elif org.cells[i]=='T':
-						self.Canvas1.create_oval(cs*x+10,cs*y+10,cs*x+11,cs*y+11,outline='red')
+						self.Canvas1.create_oval(cs*x+x_gap,cs*y+y_gap,cs*x+x_gap+1,cs*y+y_gap+1,outline='red')
 
 			self.txt.set(" ".join(["Poumon \t Immun. : ",str("%.3f" % org.status['I']), "\t Medic : ",str("%.3f" % org.status['U'])]))
 
@@ -377,9 +380,9 @@ class frame:
 				x=i%int(math.sqrt(len(org.cells)))
 				y=i/int(math.sqrt(len(org.cells)))
 				if org.cells[i]=='H':
-						self.Canvas2.create_oval(cs*x+10,cs*y+10,cs*x+11,cs*y+11,outline='green')
+						self.Canvas2.create_oval(cs*x+x_gap,cs*y+y_gap,cs*x+x_gap+1,cs*y+y_gap+1,outline='green')
 				elif org.cells[i]=='T':
-						self.Canvas2.create_oval(cs*x+10,cs*y+10,cs*x+11,cs*y+11,outline='red')
+						self.Canvas2.create_oval(cs*x+x_gap,cs*y+y_gap,cs*x+x_gap+1,cs*y+y_gap+1,outline='red')
 
 			self.txt3.set(" ".join(["Foie \t Immun. : ",str("%.3f" % org.status['I']), "\t Medic : ",str("%.3f" % org.status['U'])]))
 
@@ -389,9 +392,9 @@ class frame:
 				x=i%int(math.sqrt(len(org.cells)))
 				y=i/int(math.sqrt(len(org.cells)))
 				if org.cells[i]=='H':
-						self.Canvas3.create_oval(cs*x+10,cs*y+10,cs*x+11,cs*y+11,outline='green')
+						self.Canvas3.create_oval(cs*x+x_gap,cs*y+y_gap,cs*x+x_gap+1,cs*y+y_gap+1,outline='green')
 				elif org.cells[i]=='T':
-						self.Canvas3.create_oval(cs*x+10,cs*y+10,cs*x+11,cs*y+11,outline='red')
+						self.Canvas3.create_oval(cs*x+x_gap,cs*y+y_gap,cs*x+x_gap+1,cs*y+y_gap+1,outline='red')
 
 			self.txt2.set(" ".join(["Sein \t Immun. : ",str("%.3f" % org.status['I']), "\t Medic : ",str("%.3f" % org.status['U'])]))
 			
@@ -401,9 +404,9 @@ class frame:
 				x=i%int(math.sqrt(len(org.cells)))
 				y=i/int(math.sqrt(len(org.cells)))
 				if org.cells[i]=='H':
-						self.Canvas4.create_oval(cs*x+10,cs*y+10,cs*x+11,cs*y+11,outline='green')
+						self.Canvas4.create_oval(cs*x+x_gap,cs*y+y_gap,cs*x+x_gap+1,cs*y+y_gap+1,outline='green')
 				elif org.cells[i]=='T':
-						self.Canvas4.create_oval(cs*x+10,cs*y+10,cs*x+11,cs*y+11,outline='red')
+						self.Canvas4.create_oval(cs*x+x_gap,cs*y+y_gap,cs*x+x_gap+1,cs*y+y_gap+1,outline='red')
 
 			self.txt4.set(" ".join(["Peau \t Immun. : ",str("%.3f" % org.status['I']), "\t Medic : ",str("%.3f" % org.status['U'])]))
 
@@ -434,14 +437,17 @@ class frame:
 		#a faire : un reset quand on ferme la fenetre message
 		
 	def setSurgery(self):
+
 		self.buttonSurgery=True
+
 		
-	def surgery(self,org): # Idee : mettre un nombre max et un temps entre les interventions? Sinon il suffit de faire plein d'interventions pour guerir la patiente
-		p=0.90+random.random()*0.05 #calcul le pourcentage de tumeur qui sera enleve
+	def surgery(self,org):
+		p=0.60+random.random()*0.35 #calcule le pourcentage de tumeur qui sera enleve
 		remove=p*org.status['T']
 		org.status['T']-=remove
 		org.status['H']+=remove
-		self.buttonSurgery=False
+		self.buttonSurgery = False
+		self.surgery_used = True
 
 
 	def Reset(self) :
